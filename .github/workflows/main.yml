@@ -32,6 +32,7 @@ jobs:
       
     - name: Run SCP:SL download script
       run:  cd .\scripts\; .\scpsl.bat
+      continue-on-error: true
 
     - name: Run build script
       run:  cd .\scripts\; .\build.bat
