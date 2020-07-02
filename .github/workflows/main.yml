@@ -9,7 +9,7 @@ jobs:
     # The type of runner that the job will run on
     runs-on: windows-latest
     env:
-      SCPSL_SERVER: /scpsl
+      SCPSL_SERVER: $GITHUB_WORKSPACE/scpsl
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
@@ -34,10 +34,14 @@ jobs:
       run:  cd .\scripts\; .\scpsl.bat
       continue-on-error: true
 
-    - name: Content list
-      uses: enricomarino/actions@v2
-      with:
-        source: /scpsl
+    - name: Test
+      run: tree /f $Env:SCPSL_SERVER
+
+    - name: Test 2
+      run: tree /f $Env:GITHUB_WORKSPACE
+          
+    - name: Test 3
+      run: tree /f $SCPSL_SERVER
 
     - name: Run build script
       run:  cd .\scripts\; .\build.bat
