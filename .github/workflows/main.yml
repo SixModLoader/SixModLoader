@@ -37,10 +37,10 @@ jobs:
       run: cd scripts
       
     - name: Run SCP:SL download script
-      run: scpsl.bat
+      run: ./scpsl.bat
 
     - name: Run build script
-      run: build.bat
+      run: ./build.bat
 
     - name: Upload a Build Artifact
       uses: actions/upload-artifact@v2
