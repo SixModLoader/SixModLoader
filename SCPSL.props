@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project>
+    <ItemGroup>
+        <PackageReference Include="Lib.Harmony">
+            <Version>2.0.1</Version>
+        </PackageReference>
+        <PackageReference Include="NuGet.Versioning">
+            <Version>5.6.0</Version>
+        </PackageReference>
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection">
+            <Version>3.1.4</Version>
+        </PackageReference>
+        <PackageReference Include="YamlDotNet">
+            <Version>8.1.2</Version>
+        </PackageReference>
+
+        <!-- Game -->
+        <Reference Include="Assembly-CSharp_publicized">
+            <HintPath>$(SCPSL_SERVER)\SCPSL_Data\Managed\publicized_assemblies\Assembly-CSharp_publicized.dll</HintPath>
+            <Private>False</Private>
+        </Reference>
+        <Reference Include="CommandSystem.Core">
+            <HintPath>$(SCPSL_SERVER)\SCPSL_Data\Managed\CommandSystem.Core.dll</HintPath>
+            <Private>False</Private>
+        </Reference>
+        <Reference Include="Assembly-CSharp-firstpass">
+            <HintPath>$(SCPSL_SERVER)\SCPSL_Data\Managed\Assembly-CSharp-firstpass.dll</HintPath>
+            <Private>False</Private>
+        </Reference>
+
+        <!-- Game dependencies -->
+        <Reference Include="Mirror_publicized">
+            <HintPath>$(EXILED_References)\publicized_assemblies\Mirror_publicized.dll</HintPath>
+            <Private>False</Private>
+        </Reference>
+
+        <!-- Unity -->
+        <Reference Include="UnityEngine">
+            <HintPath>$(SCPSL_SERVER)\SCPSL_Data\Managed\UnityEngine.dll</HintPath>
+            <Private>False</Private>
+        </Reference>
+        <Reference Include="UnityEngine.CoreModule">
+            <HintPath>$(SCPSL_SERVER)\SCPSL_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
+            <Private>False</Private>
+        </Reference>
+    </ItemGroup>
+</Project>

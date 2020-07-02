@@ -1,0 +1,86 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+    <PropertyGroup>
+        <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+        <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+        <ProjectGuid>{AAA2CF45-FAB8-4EE5-9FD5-3B2D12A41D6E}</ProjectGuid>
+        <OutputType>Library</OutputType>
+        <AppDesignerFolder>Properties</AppDesignerFolder>
+        <RootNamespace>SixModLoader.Api</RootNamespace>
+        <AssemblyName>SixModLoader.Api</AssemblyName>
+        <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+        <FileAlignment>512</FileAlignment>
+        <Deterministic>true</Deterministic>
+        <TargetFrameworkProfile />
+        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+        <LangVersion>latest</LangVersion>
+    </PropertyGroup>
+    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+        <DebugSymbols>true</DebugSymbols>
+        <DebugType>full</DebugType>
+        <Optimize>false</Optimize>
+        <OutputPath>bin\Debug\</OutputPath>
+        <DefineConstants>DEBUG;TRACE</DefineConstants>
+        <ErrorReport>prompt</ErrorReport>
+        <WarningLevel>4</WarningLevel>
+    </PropertyGroup>
+    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+        <DebugType>pdbonly</DebugType>
+        <Optimize>true</Optimize>
+        <OutputPath>bin\Release\</OutputPath>
+        <DefineConstants>TRACE</DefineConstants>
+        <ErrorReport>prompt</ErrorReport>
+        <WarningLevel>4</WarningLevel>
+    </PropertyGroup>
+    <ItemGroup>
+        <Reference Include="System" />
+        <Reference Include="System.Core" />
+        <Reference Include="System.Xml.Linq" />
+        <Reference Include="System.Data.DataSetExtensions" />
+        <Reference Include="Microsoft.CSharp" />
+        <Reference Include="System.Data" />
+        <Reference Include="System.Net.Http" />
+        <Reference Include="System.Xml" />
+    </ItemGroup>
+    <ItemGroup>
+        <Compile Include="CommandManager.cs" />
+        <Compile Include="Configuration\Comments.cs" />
+        <Compile Include="Configuration\ConfigurationManager.cs" />
+        <Compile Include="Events\Player\Inventory\PlayerChangeItemEvent.cs" />
+        <Compile Include="Events\Player\Inventory\PlayerDropItemEvent.cs" />
+        <Compile Include="Events\Player\Inventory\PlayerDroppedItemEvent.cs" />
+        <Compile Include="Events\Player\Inventory\PlayerPickupItemEvent.cs" />
+        <Compile Include="Events\Player\PlayerEvent.cs" />
+        <Compile Include="Events\Player\PlayerLeftEvent.cs" />
+        <Compile Include="Events\Player\PlayerJoinedEvent.cs" />
+        <Compile Include="Events\Player\Weapon\PlayerWeaponChangeAttachmentsEvent.cs" />
+        <Compile Include="Events\Player\Weapon\PlayerShootEvent.cs" />
+        <Compile Include="Events\Player\Weapon\PlayerShotByPlayerEvent.cs" />
+        <Compile Include="Events\Player\Weapon\PlayerWeaponReloadEvent.cs" />
+        <Compile Include="Events\Server\ServerConsolePatch.cs" />
+        <Compile Include="Extensions\BroadcastExtensions.cs" />
+        <Compile Include="Extensions\CommandExtensions.cs" />
+        <Compile Include="Extensions\Extensions.cs" />
+        <Compile Include="Extensions\FormatExtensions.cs" />
+        <Compile Include="Patches\CommandPatch.cs" />
+        <Compile Include="SixModLoaderApi.cs" />
+        <Compile Include="Properties\AssemblyInfo.cs" />
+        <Compile Include="SixModLoaderCommand.cs" />
+    </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\SixModLoader\SixModLoader.csproj">
+            <Project>{22281b95-bf42-492d-a975-f5e87cdd4530}</Project>
+            <Name>SixModLoader</Name>
+        </ProjectReference>
+    </ItemGroup>
+    <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+    <Import Project="$(SolutionDir)\SCPSL.props" />
+
+    <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
+        <PostBuildEvent>copy $(TargetDir)\$(AssemblyName).dll $(SCPSL_SERVER)\SixModLoader\Mods\</PostBuildEvent>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
+        <PostBuildEvent>copy $(TargetDir)\$(AssemblyName).dll $(SolutionDir)\out\Mods\</PostBuildEvent>
+    </PropertyGroup>
+</Project>
