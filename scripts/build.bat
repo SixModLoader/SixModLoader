@@ -1,4 +1,3 @@
-mkdir bin
-mkdir Mods
+mkdir ../out/bin
+mkdir ../out/Mods
 msbuild ../SixModLoader.sln /p:Configuration=Release
-pause
