@@ -1,0 +1,1 @@
+steamcmd +login anonymous +force_install_dir %SCPSL_SERVER% +app_update 996560 -beta scopophobia validate +quit
