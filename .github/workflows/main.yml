@@ -1,7 +1,5 @@
 name: CI
 
-# Controls when the action will run. Triggers the workflow on push or pull request
-# events but only for the master branch
 on: [push, pull_request]
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
@@ -24,7 +22,6 @@ jobs:
     - name: Download steamcmd
       uses: carlosperate/download-file-action@v1.0.3
       with:
-        # URL of the file to download
         file-url: https://steamcdn-a.akamaihd.net/client/installer/steamcmd.zip
     
     - name: extract-7z-action
@@ -32,15 +29,12 @@ jobs:
       with:
         pathSource: steamcmd.zip
         pathTarget: scripts
-        
-    - name: Change directory to scripts
-      run: cd scripts
       
     - name: Run SCP:SL download script
-      run: ./scpsl.bat
+      run:  cd .\scripts\; .\scpsl.bat
 
     - name: Run build script
-      run: ./build.bat
+      run:  cd .\scripts\; .\build.bat
 
     - name: Upload a Build Artifact
       uses: actions/upload-artifact@v2
