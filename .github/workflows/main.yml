@@ -34,6 +34,11 @@ jobs:
       run:  cd .\scripts\; .\scpsl.bat
       continue-on-error: true
 
+    - name: Content list
+      uses: enricomarino/actions@v2
+      with:
+        source: /scpsl
+
     - name: Run build script
       run:  cd .\scripts\; .\build.bat
 
