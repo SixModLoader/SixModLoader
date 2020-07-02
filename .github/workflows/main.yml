@@ -33,16 +33,15 @@ jobs:
         pathSource: steamcmd.zip
         pathTarget: scripts
         
+    - name: Change directory to scripts
+      run: cd scripts
+      
     - name: Run SCP:SL download script
-      run: |
-        cd /scripts
-        scpsl.bat
-    
+      run: scpsl.bat
+
     - name: Run build script
-      run: |
-        cd /scripts
-        build.bat
-        
+      run: build.bat
+
     - name: Upload a Build Artifact
       uses: actions/upload-artifact@v2
       with:
