@@ -8,15 +8,16 @@ jobs:
   build:
     # The type of runner that the job will run on
     runs-on: windows-latest
+    
     env:
-      SCPSL_SERVER: /scpsl
+      SCPSL_SERVER: ${{ github.workspace }}/scpsl
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
     - uses: actions/checkout@v2
 
-    - name: setup-msbuild
+    - name: Setup MSBuild
       uses: microsoft/setup-msbuild@v1
       
     - name: Download steamcmd
@@ -24,7 +25,7 @@ jobs:
       with:
         file-url: https://steamcdn-a.akamaihd.net/client/installer/steamcmd.zip
     
-    - name: extract-7z-action
+    - name: Extract steamcmd
       uses: DuckSoft/extract-7z-action@v1.0
       with:
         pathSource: steamcmd.zip
@@ -32,6 +33,25 @@ jobs:
       
     - name: Run SCP:SL download script
       run:  cd .\scripts\; .\scpsl.bat
+      continue-on-error: true
+
+    - name: Download AssemblyPublicizer
+      uses: carlosperate/download-file-action@v1.0.3
+      with:
+        file-url: https://github.com/CabbageCrow/AssemblyPublicizer/releases/download/v1.1.0/AssemblyPublicizer.zip
+        location: ${{ env.SCPSL_SERVER }}\SCPSL_Data\Managed
+
+    - name: Extract AssemblyPublicizer
+      uses: DuckSoft/extract-7z-action@v1.0
+      with:
+        pathSource: ${{ env.SCPSL_SERVER }}\SCPSL_Data\Managed\AssemblyPublicizer.zip
+        pathTarget: ${{ env.SCPSL_SERVER }}\SCPSL_Data\Managed
+
+    - name: Publicize
+      run:  |
+        cd ${{ env.SCPSL_SERVER }}\SCPSL_Data\Managed
+        AssemblyPublicizer\AssemblyPublicizer.exe Assembly-CSharp.dll
+        AssemblyPublicizer\AssemblyPublicizer.exe Mirror.dll
 
     - name: Run build script
       run:  cd .\scripts\; .\build.bat
