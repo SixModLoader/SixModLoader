@@ -30,7 +30,13 @@ jobs:
       with:
         pathSource: steamcmd.zip
         pathTarget: scripts
-      
+    
+    - name: Cache SCP:SL
+      uses: actions/cache@v2
+      with:
+        path: ${{ env.SCPSL_SERVER }}
+        key: scpsl
+    
     - name: Run SCP:SL download script
       run:  cd .\scripts\; .\scpsl.bat
       continue-on-error: true
@@ -53,9 +59,16 @@ jobs:
         AssemblyPublicizer\AssemblyPublicizer.exe Assembly-CSharp.dll
         AssemblyPublicizer\AssemblyPublicizer.exe Mirror.dll
         
+    - uses: actions/cache@v2
+      with:
+        path: ~/.nuget/packages
+        key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-nuget-
+
     - name: Setup NuGet
       uses: NuGet/setup-nuget@v1.0.2
-        
+      
     - name: Restore NuGet
       run: nuget restore
 
