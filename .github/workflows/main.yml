@@ -52,6 +52,12 @@ jobs:
         cd ${{ env.SCPSL_SERVER }}\SCPSL_Data\Managed
         AssemblyPublicizer\AssemblyPublicizer.exe Assembly-CSharp.dll
         AssemblyPublicizer\AssemblyPublicizer.exe Mirror.dll
+        
+    - name: Setup NuGet
+      uses: NuGet/setup-nuget@v1.0.2
+        
+    - name: Restore NuGet
+      run: nuget restore
 
     - name: Run build script
       run:  cd .\scripts\; .\build.bat
