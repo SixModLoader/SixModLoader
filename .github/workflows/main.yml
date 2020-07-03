@@ -17,7 +17,7 @@ jobs:
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
     - uses: actions/checkout@v2
 
-    - name: setup-msbuild
+    - name: Setup MSBuild
       uses: microsoft/setup-msbuild@v1
       
     - name: Download steamcmd
@@ -25,7 +25,7 @@ jobs:
       with:
         file-url: https://steamcdn-a.akamaihd.net/client/installer/steamcmd.zip
     
-    - name: extract-7z-action
+    - name: Extract steamcmd
       uses: DuckSoft/extract-7z-action@v1.0
       with:
         pathSource: steamcmd.zip
@@ -36,14 +36,12 @@ jobs:
       continue-on-error: true
 
     - name: Download AssemblyPublicizer
-      uses: Legion2/download-release-action@v2.1.0
+      uses: carlosperate/download-file-action@v1.0.3
       with:
-        repository: CabbageCrow/AssemblyPublicizer
-        tag: v1.1.0
-        path: ${{ env.SCPSL_SERVER }}\SCPSL_Data\Managed
-        file: AssemblyPublicizer.zip
+        file-url: https://github.com/CabbageCrow/AssemblyPublicizer/releases/download/v1.1.0/AssemblyPublicizer.zip
+        location: ${{ env.SCPSL_SERVER }}\SCPSL_Data\Managed
 
-    - name: extract-7z-action
+    - name: Extract AssemblyPublicizer
       uses: DuckSoft/extract-7z-action@v1.0
       with:
         pathSource: ${{ env.SCPSL_SERVER }}\SCPSL_Data\Managed\AssemblyPublicizer.zip
