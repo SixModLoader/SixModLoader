@@ -10,7 +10,7 @@ jobs:
     runs-on: windows-latest
     
     env:
-      SCPSL_SERVER: $GITHUB_WORKSPACE
+      SCPSL_SERVER: ${{ github.workspace }}/scpsl
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
