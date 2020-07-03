@@ -35,11 +35,25 @@ jobs:
       run:  cd .\scripts\; .\scpsl.bat
       continue-on-error: true
 
-    - name: Test
-      run: tree /f $Env:SCPSL_SERVER
+    - name: Download AssemblyPublicizer
+      uses: Legion2/download-release-action@v2.1.0
+      with:
+        repository: CabbageCrow/AssemblyPublicizer
+        tag: v1.1.0
+        path: ${{ env.SCPSL_SERVER }}\SCPSL_Data\Managed
+        file: AssemblyPublicizer.zip
 
-    - name: Test 2
-      run: tree /f $Env:GITHUB_WORKSPACE
+    - name: extract-7z-action
+      uses: DuckSoft/extract-7z-action@v1.0
+      with:
+        pathSource: ${{ env.SCPSL_SERVER }}\SCPSL_Data\Managed\AssemblyPublicizer.zip
+        pathTarget: ${{ env.SCPSL_SERVER }}\SCPSL_Data\Managed
+
+    - name: Publicize
+      run:  |
+        cd ${{ env.SCPSL_SERVER }}\SCPSL_Data\Managed
+        AssemblyPublicizer\AssemblyPublicizer.exe Assembly-CSharp.dll
+        AssemblyPublicizer\AssemblyPublicizer.exe Mirror.dll
 
     - name: Run build script
       run:  cd .\scripts\; .\build.bat
