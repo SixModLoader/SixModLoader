@@ -5,7 +5,7 @@ VisualStudioVersion = 16.0.30001.183
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SixModLoader", "SixModLoader\SixModLoader.csproj", "{22281B95-BF42-492D-A975-F5E87CDD4530}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SixModLoader.ExampleMod", "SixModLoader.ExamplePlugin\SixModLoader.ExampleMod.csproj", "{15A71B1B-BA22-49A9-9919-EE56D45DE3EB}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SixModLoader.ExampleMod", "SixModLoader.ExampleMod\SixModLoader.ExampleMod.csproj", "{15A71B1B-BA22-49A9-9919-EE56D45DE3EB}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SixModLoader.Api", "SixModLoader.Api\SixModLoader.Api.csproj", "{AAA2CF45-FAB8-4EE5-9FD5-3B2D12A41D6E}"
 EndProject
