@@ -8,16 +8,14 @@ jobs:
   build:
     # The type of runner that the job will run on
     runs-on: windows-latest
+    
+    env:
+      SCPSL_SERVER: $GITHUB_WORKSPACE
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
     - uses: actions/checkout@v2
-
-    - name: Set SCP:SL path
-      uses: allenevans/set-env@v1.0.0
-      with:
-          SCPSL_SERVER: '%GITHUB_WORKSPACE%/scpsl'
 
     - name: setup-msbuild
       uses: microsoft/setup-msbuild@v1
