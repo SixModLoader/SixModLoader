@@ -30,7 +30,7 @@
 
         <!-- Game dependencies -->
         <Reference Include="Mirror_publicized">
-            <HintPath>$(EXILED_References)\publicized_assemblies\Mirror_publicized.dll</HintPath>
+            <HintPath>$(SCPSL_SERVER)\SCPSL_Data\Managed\publicized_assemblies\Mirror_publicized.dll</HintPath>
             <Private>False</Private>
         </Reference>
 
