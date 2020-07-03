@@ -17,7 +17,7 @@ jobs:
     - name: Set SCP:SL path
       uses: allenevans/set-env@v1.0.0
       with:
-          SCPSL_SERVER: $GITHUB_WORKSPACE/scpsl
+          SCPSL_SERVER: '%GITHUB_WORKSPACE%/scpsl'
 
     - name: setup-msbuild
       uses: microsoft/setup-msbuild@v1
