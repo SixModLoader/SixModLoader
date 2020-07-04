@@ -5,78 +5,12 @@ using System.Linq;
 using YamlDotNet.Core;
 using YamlDotNet.Core.Events;
 using YamlDotNet.Serialization;
-using YamlDotNet.Serialization.EventEmitters;
 using YamlDotNet.Serialization.ObjectGraphVisitors;
 using YamlDotNet.Serialization.TypeInspectors;
 
 namespace SixModLoader.Api.Configuration
 {
-    public class ForceQuotedStringValuesEventEmitter : ChainedEventEmitter
-    {
-        private class EmitterState
-        {
-            private readonly int _valuePeriod;
-            private int _currentIndex;
-
-            public EmitterState(int valuePeriod)
-            {
-                this._valuePeriod = valuePeriod;
-            }
-
-            public bool VisitNext()
-            {
-                ++_currentIndex;
-                return (_currentIndex % _valuePeriod) == 0;
-            }
-        }
-
-        private readonly Stack<EmitterState> state = new Stack<EmitterState>();
-
-        public ForceQuotedStringValuesEventEmitter(IEventEmitter nextEmitter) : base(nextEmitter)
-        {
-            this.state.Push(new EmitterState(1));
-        }
-
-        public override void Emit(ScalarEventInfo eventInfo, IEmitter emitter)
-        {
-            if (this.state.Peek().VisitNext())
-            {
-                if (eventInfo.Source.Type == typeof(string))
-                {
-                    eventInfo.Style = ((string)eventInfo.Source.Value).Length > 1 ? ScalarStyle.DoubleQuoted : ScalarStyle.SingleQuoted;
-                }
-            }
-
-            base.Emit(eventInfo, emitter);
-        }
-
-        public override void Emit(MappingStartEventInfo eventInfo, IEmitter emitter)
-        {
-            this.state.Peek().VisitNext();
-            this.state.Push(new EmitterState(2));
-            base.Emit(eventInfo, emitter);
-        }
-
-        public override void Emit(MappingEndEventInfo eventInfo, IEmitter emitter)
-        {
-            this.state.Pop();
-            base.Emit(eventInfo, emitter);
-        }
-
-        public override void Emit(SequenceStartEventInfo eventInfo, IEmitter emitter)
-        {
-            this.state.Peek().VisitNext();
-            this.state.Push(new EmitterState(1));
-            base.Emit(eventInfo, emitter);
-        }
-
-        public override void Emit(SequenceEndEventInfo eventInfo, IEmitter emitter)
-        {
-            this.state.Pop();
-            base.Emit(eventInfo, emitter);
-        }
-    }
-
+    // https://github.com/aaubry/YamlDotNet/issues/152#issuecomment-349034754
     public class CommentGatheringTypeInspector : TypeInspectorSkeleton
     {
         private readonly ITypeInspector _innerTypeDescriptor;

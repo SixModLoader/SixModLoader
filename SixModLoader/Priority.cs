@@ -2,7 +2,7 @@
 
 namespace SixModLoader
 {
-    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Assembly)]
+    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Assembly | AttributeTargets.Method)]
     public class PriorityAttribute : Attribute
     {
         public int Priority { get; set; }

@@ -52,6 +52,7 @@ namespace SixModLoader.Api.Extensions
     public static class BroadcastExtensions
     {
         private static Broadcast _broadcast;
+
         internal static Broadcast Broadcast
         {
             get
@@ -69,20 +70,23 @@ namespace SixModLoader.Api.Extensions
         public static readonly Dictionary<NetworkConnection, BroadcastConnection> Connections = new Dictionary<NetworkConnection, BroadcastConnection>();
 
         [EventHandler]
+        [Priority(Priority.Highest)]
         internal static void OnPlayerJoined(PlayerJoinedEvent ev)
         {
-            var connection = ev.Player.playerMovementSync.connectionToClient;
+            var connection = ev.Player.networkIdentity.connectionToClient;
             if (Connections.TryGetValue(connection, out var broadcastConnection))
             {
                 broadcastConnection.KillCoroutines();
             }
+
             Connections[connection] = new BroadcastConnection(ev.Player);
         }
 
         [EventHandler]
+        [Priority(Priority.Highest)]
         internal static void OnPlayerLeft(PlayerLeftEvent ev)
         {
-            var connection = ev.Player.playerMovementSync.connectionToClient;
+            var connection = ev.Player.networkIdentity.connectionToClient;
 
             if (Connections.TryGetValue(connection, out var broadcastConnection))
             {
@@ -100,10 +104,7 @@ namespace SixModLoader.Api.Extensions
 
             if (time.HasValue)
             {
-                Timing.CallDelayed(time.Value, () =>
-                {
-                    player.SetStatus(i, null);
-                }, player.gameObject);
+                Timing.CallDelayed(time.Value, () => { player.SetStatus(i, null); }, player.gameObject);
             }
         }
 
@@ -120,7 +121,7 @@ namespace SixModLoader.Api.Extensions
             var message = statusOnly ? new BroadcastMessage(string.Empty, MaxBroadcastTime, connection: connection) : broadcastConnection.CurrentMessage ?? broadcastConnection.Messages[0];
             if (broadcastConnection.CurrentMessage != null)
             {
-                message.Time = (float)(message.Time - (DateTimeOffset.Now - broadcastConnection.CurrentMessage.StartedAt).TotalSeconds);
+                message.Time = (float) (message.Time - (DateTimeOffset.Now - broadcastConnection.CurrentMessage.StartedAt).TotalSeconds);
                 broadcastConnection.KillCoroutines();
             }
 
@@ -135,6 +136,7 @@ namespace SixModLoader.Api.Extensions
             {
                 data += "\n";
             }
+
             data += string.Join("\n", broadcastConnection.Status.Where(x => !string.IsNullOrEmpty(x)));
 
             InvokeOriginal(() =>
@@ -142,7 +144,7 @@ namespace SixModLoader.Api.Extensions
                 Broadcast.TargetClearElements(connection);
                 if (!string.IsNullOrEmpty(data))
                 {
-                    Broadcast.TargetAddElement(connection, data, (ushort)Mathf.CeilToInt(message.Time), message.Flags);
+                    Broadcast.TargetAddElement(connection, data, (ushort) Mathf.CeilToInt(message.Time), message.Flags);
                 }
             });
 
@@ -176,9 +178,13 @@ namespace SixModLoader.Api.Extensions
                     return true;
                 }
 
-                var broadcastConnection = Connections[conn];
-                broadcastConnection.Messages.Add(new BroadcastMessage(data, time, flags, conn));
-                Update(conn);
+                var broadcastConnection = Connections.GetValueSafe(conn);
+                if (broadcastConnection != null)
+                {
+                    broadcastConnection.Messages.Add(new BroadcastMessage(data, time, flags, conn));
+                    Update(conn);
+                }
+
                 return false;
             }
         }
@@ -198,6 +204,7 @@ namespace SixModLoader.Api.Extensions
                     pair.Value.Messages.Add(new BroadcastMessage(data, time, flags));
                     Update(pair.Key);
                 }
+
                 return false;
             }
         }
@@ -212,9 +219,12 @@ namespace SixModLoader.Api.Extensions
                     return;
                 }
 
-                var broadcastConnection = Connections[conn];
-                broadcastConnection.KillCoroutines();
-                broadcastConnection.Messages.Clear();
+                var broadcastConnection = Connections.GetValueSafe(conn);
+                if (broadcastConnection != null)
+                {
+                    broadcastConnection.KillCoroutines();
+                    broadcastConnection.Messages.Clear();
+                }
             }
         }
 

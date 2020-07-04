@@ -2,6 +2,7 @@
 using System.IO;
 using System.Reflection;
 using HarmonyLib;
+using SixModLoader.Api.Configuration.Converters;
 using SixModLoader.Mods;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
@@ -42,17 +43,44 @@ namespace SixModLoader.Api.Configuration
 
     public class ConfigurationManager
     {
-        public static IDeserializer Deserializer { get; } = new DeserializerBuilder()
-            .WithNamingConvention(HyphenatedNamingConvention.Instance)
-            .IgnoreUnmatchedProperties()
-            .Build();
+        private static EventYamlTypeConverter[] Converters { get; } =
+        {
+            new VectorsConverter()
+        };
 
-        public static ISerializer Serializer { get; } = new SerializerBuilder()
-            .WithNamingConvention(HyphenatedNamingConvention.Instance)
-            .WithEventEmitter(next => new ForceQuotedStringValuesEventEmitter(next))
-            .WithTypeInspector(inner => new CommentGatheringTypeInspector(inner))
-            .WithEmissionPhaseObjectGraphVisitor(args => new CommentsObjectGraphVisitor(args.InnerVisitor))
-            .Build();
+        public static IDeserializer Deserializer { get; }
+        public static ISerializer Serializer { get; }
+
+        static ConfigurationManager()
+        {
+            var deserializerBuilder = new DeserializerBuilder()
+                .WithNamingConvention(HyphenatedNamingConvention.Instance)
+                .IgnoreUnmatchedProperties();
+
+            foreach (var converter in Converters)
+            {
+                deserializerBuilder.WithTypeConverter(converter);
+            }
+
+            Deserializer = deserializerBuilder.Build();
+
+            // https://github.com/aaubry/YamlDotNet/issues/473#issuecomment-595954595
+            IEventEmitter eventEmitter = null;
+
+            var serializerBuilder = new SerializerBuilder()
+                .WithNamingConvention(HyphenatedNamingConvention.Instance)
+                .WithEventEmitter(next => eventEmitter = new ForceQuotedStringValuesEventEmitter(next))
+                .WithTypeInspector(inner => new CommentGatheringTypeInspector(inner))
+                .WithEmissionPhaseObjectGraphVisitor(args => new CommentsObjectGraphVisitor(args.InnerVisitor));
+
+            foreach (var converter in Converters)
+            {
+                converter.EventEmitter = () => eventEmitter;
+                serializerBuilder.WithTypeConverter(converter);
+            }
+
+            Serializer = serializerBuilder.Build();
+        }
 
         public static T LoadConfigurationFile<T>(string file) where T : new()
         {
@@ -68,7 +96,7 @@ namespace SixModLoader.Api.Configuration
             {
                 if (exists)
                 {
-                    obj = Deserializer.Deserialize(new StreamReader(fileStream), type);
+                    obj = Deserializer.Deserialize(new StreamReader(fileStream), type) ?? obj;
                 }
             }
 

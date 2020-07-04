@@ -47,6 +47,9 @@
         <Compile Include="CommandManager.cs" />
         <Compile Include="Configuration\Comments.cs" />
         <Compile Include="Configuration\ConfigurationManager.cs" />
+        <Compile Include="Configuration\Converters\EventYamlTypeConverter.cs" />
+        <Compile Include="Configuration\Converters\VectorsConverter.cs" />
+        <Compile Include="Configuration\ForceQuotedStringValuesEventEmitter.cs" />
         <Compile Include="Events\Player\Inventory\PlayerChangeItemEvent.cs" />
         <Compile Include="Events\Player\Inventory\PlayerDropItemEvent.cs" />
         <Compile Include="Events\Player\Inventory\PlayerDroppedItemEvent.cs" />
@@ -59,6 +62,7 @@
         <Compile Include="Events\Player\Weapon\PlayerShotByPlayerEvent.cs" />
         <Compile Include="Events\Player\Weapon\PlayerWeaponReloadEvent.cs" />
         <Compile Include="Events\Server\ServerConsolePatch.cs" />
+        <Compile Include="Extensions\AmmoType.cs" />
         <Compile Include="Extensions\BroadcastExtensions.cs" />
         <Compile Include="Extensions\CommandExtensions.cs" />
         <Compile Include="Extensions\Extensions.cs" />
