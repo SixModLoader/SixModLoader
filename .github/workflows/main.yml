@@ -84,7 +84,7 @@ jobs:
 
     - uses: maxheld83/ghpages@master
       name: Publish Documentation on GitHub Pages
-      if: ${{ github.event_name != 'pull_request }}
+      if: ${{ github.event_name != 'pull_request' }}
       env:
         BUILD_DIR: docs/_site
         GH_PAT: ${{ secrets.GH_PAT }}
