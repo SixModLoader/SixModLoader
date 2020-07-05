@@ -2,9 +2,8 @@
 using System.IO;
 using System.Reflection;
 using System.Threading.Tasks;
+using Exiled.API.Enums;
 using Exiled.API.Features;
-using Exiled.Loader;
-using HarmonyLib;
 using MEC;
 using SixModLoader.Api.Events.Server;
 using SixModLoader.Events;
@@ -96,8 +95,8 @@ namespace SixModLoader.Compatibility.Exiled
             File.Open(Paths.Config, FileMode.OpenOrCreate, FileAccess.Read).Dispose();
             Timing.CallDelayed(0.25f, () =>
             {
-                AccessTools.Method(typeof(PluginManager), "LoadAllDependencies").Invoke(null, new object[0]);
-                PluginManager.LoadAll();
+                global::Exiled.Loader.Loader.Config.Environment = EnvironmentType.Production;
+                global::Exiled.Loader.Loader.Run();
 
                 try
                 {

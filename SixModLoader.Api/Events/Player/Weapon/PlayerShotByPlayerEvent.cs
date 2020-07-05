@@ -36,13 +36,14 @@ namespace SixModLoader.Api.Events.Player.Weapon
             private static readonly MethodInfo m_Invoke = AccessTools.Method(typeof(Patch), nameof(Invoke));
             private static readonly MethodInfo m_HurtPlayer = AccessTools.Method(typeof(PlayerStats), nameof(PlayerStats.HurtPlayer));
 
+            // TODO new beta moved final damage changing to HitInfo constructor (capture HitInfo?)
             public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator iLGenerator)
             {
                 var codeInstructions = instructions.ToList();
 
                 var index = codeInstructions
-                    .FindIndex(x => x.opcode == OpCodes.Callvirt && (MethodInfo)x.operand == m_HurtPlayer) - 25;
-
+                    .FindIndex(x => x.opcode == OpCodes.Callvirt && (MethodInfo)x.operand == m_HurtPlayer) - 32;
+                
                 var label = iLGenerator.DefineLabel();
                 codeInstructions.Last().labels.Add(label);
                 
