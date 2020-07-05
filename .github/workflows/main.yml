@@ -89,15 +89,16 @@ jobs:
         pathTarget: docfx
 
     - name: Build Documentation
-      run: ./docfx/docfx.exe build docs/docfx.json 
+      run: ./docfx/docfx.exe docs/docfx.json 
 
-    - uses: maxheld83/ghpages@master
-      name: Publish Documentation on GitHub Pages
+    - name: Publish Documentation on GitHub Pages
+      uses: peaceiris/actions-gh-pages@v3
       if: ${{ github.event_name != 'pull_request' }}
-      env:
-        BUILD_DIR: docs/_site
-        GH_PAT: ${{ secrets.GH_PAT }}
-        GITHUB_REPOSITORY: SixModLoader/sixmodloader.github.io
+      with:
+        personal_token: ${{ secrets.GH_PAT }}
+        publish_dir: ./docs/_site
+        external_repository: SixModLoader/sixmodloader.github.io
+        publish_branch: master
 
     - name: Upload a Build Artifact
       uses: actions/upload-artifact@v2
