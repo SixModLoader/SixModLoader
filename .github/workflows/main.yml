@@ -77,10 +77,19 @@ jobs:
     - name: Run build script
       run:  cd .\scripts\; .\build.bat
 
-    - uses: nikeee/docfx-action@master
-      name: Build Documentation
+    - name: Download docfx
+      uses: carlosperate/download-file-action@v1.0.3
       with:
-        args: docs/docfx.json
+        file-url: https://github.com/dotnet/docfx/releases/download/v2.56/docfx.zip
+    
+    - name: Extract docfx
+      uses: DuckSoft/extract-7z-action@v1.0
+      with:
+        pathSource: docfx.zip
+        pathTarget: docfx
+
+    - name: Build Documentation
+      run: ./docfx/docfx.exe build docs/docfx.json 
 
     - uses: maxheld83/ghpages@master
       name: Publish Documentation on GitHub Pages
