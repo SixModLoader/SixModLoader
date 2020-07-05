@@ -60,7 +60,8 @@ jobs:
         AssemblyPublicizer\AssemblyPublicizer.exe Assembly-CSharp.dll
         AssemblyPublicizer\AssemblyPublicizer.exe Mirror.dll
         
-    - uses: actions/cache@v2
+    - name: Cache NuGet
+      uses: actions/cache@v2
       with:
         path: ~/.nuget/packages
         key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
@@ -75,6 +76,29 @@ jobs:
 
     - name: Run build script
       run:  cd .\scripts\; .\build.bat
+
+    - name: Download docfx
+      uses: carlosperate/download-file-action@v1.0.3
+      with:
+        file-url: https://github.com/dotnet/docfx/releases/download/v2.56/docfx.zip
+    
+    - name: Extract docfx
+      uses: DuckSoft/extract-7z-action@v1.0
+      with:
+        pathSource: docfx.zip
+        pathTarget: docfx
+
+    - name: Build Documentation
+      run: ./docfx/docfx.exe docs/docfx.json 
+
+    - name: Publish Documentation on GitHub Pages
+      uses: peaceiris/actions-gh-pages@v3
+      if: ${{ github.event_name != 'pull_request' }}
+      with:
+        personal_token: ${{ secrets.GH_PAT }}
+        publish_dir: ./docs/_site
+        external_repository: SixModLoader/sixmodloader.github.io
+        publish_branch: master
 
     - name: Upload a Build Artifact
       uses: actions/upload-artifact@v2
