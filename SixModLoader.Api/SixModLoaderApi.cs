@@ -42,7 +42,8 @@ namespace SixModLoader.Api
                 CommandManager.CommandHandlers.AddRange(new CommandHandler[]
                 {
                     CommandProcessor.RemoteAdminCommandHandler,
-                    GameCore.Console.singleton.ConsoleCommandHandler
+                    GameCore.Console.singleton.ConsoleCommandHandler,
+                    QueryProcessor.DotCommandHandler
                 });
                 
                 CommandManager.RegisterCommands(mod);

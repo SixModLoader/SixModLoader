@@ -2,7 +2,6 @@
 using CommandSystem;
 using SixModLoader.Api.Configuration;
 using SixModLoader.Api.Extensions;
-using SixModLoader.Api.Patches;
 using SixModLoader.Events;
 using SixModLoader.Mods;
 
@@ -37,7 +36,7 @@ namespace SixModLoader.ExampleMod
     }
 
     [AutoCommandHandler(typeof(GameConsoleCommandHandler))]
-    [AutoCommandHandler(typeof(GameConsoleQueryCommandHandler))]
+    [AutoCommandHandler(typeof(ClientCommandHandler))]
     [AutoCommandHandler(typeof(RemoteAdminCommandHandler))]
     public class ExampleCommand : ICommand
     {

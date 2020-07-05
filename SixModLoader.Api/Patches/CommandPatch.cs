@@ -4,75 +4,29 @@ using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
 using CommandSystem;
-using CommandSystem.Commands;
 using HarmonyLib;
 using RemoteAdmin;
 using SixModLoader.Api.Extensions;
 
 namespace SixModLoader.Api.Patches
 {
-    public class GameConsoleQueryCommandHandler : CommandHandler
-    {
-        private GameConsoleQueryCommandHandler()
-        {
-        }
-
-        public static GameConsoleQueryCommandHandler Create()
-        {
-            var commandHandler = new GameConsoleQueryCommandHandler();
-            commandHandler.LoadGeneratedCommands();
-            return commandHandler;
-        }
-
-        public override void LoadGeneratedCommands()
-        {
-            this.RegisterCommand(new HelpCommand(this));
-        }
-    }
-
-    public class QueryProcessorPatch
-    {
-        [HarmonyPatch(typeof(QueryProcessor), nameof(QueryProcessor.ProcessGameConsoleQuery))]
-        public class ProcessGameConsoleQueryPatch
-        {
-            public static bool Prefix(QueryProcessor __instance, [HarmonyArgument("query")] string q, bool encrypted)
-            {
-                var sender = __instance._sender;
-                var gameConsoleTransmission = __instance.GCT;
-
-                var query = q.Split(' ');
-                if (CommandManager.GameConsoleQueryCommandHandler.TryGetCommand(query[0], out var command))
-                {
-                    try
-                    {
-                        var success = command.Execute(query.Segment(1), sender, out var response);
-                        if (response != null)
-                        {
-                            gameConsoleTransmission.SendToClient(__instance.connectionToClient, response, success ? "green" : "red");
-                        }
-                    }
-                    catch (Exception e)
-                    {
-                        gameConsoleTransmission.SendToClient(__instance.connectionToClient, "Command execution failed! Error: " + e, "red");
-                    }
-
-                    return false;
-                }
-
-                return true;
-            }
-        }
-    }
-
     public class CommandProcessorPatch
     {
-        [HarmonyPatch(typeof(CommandProcessor), nameof(CommandProcessor.ProcessQuery))]
+        [HarmonyPatch]
         public class ProcessQueryPatch
         {
+            private static readonly MethodInfo m_ProcessQuery = AccessTools.Method(typeof(CommandProcessor), nameof(CommandProcessor.ProcessQuery));
+            private static readonly MethodInfo m_ProcessGameConsoleQuery = AccessTools.Method(typeof(QueryProcessor), nameof(QueryProcessor.ProcessGameConsoleQuery));
+
+            public static IEnumerable<MethodBase> TargetMethods()
+            {
+                return new MethodBase[] {m_ProcessQuery, m_ProcessGameConsoleQuery};
+            }
+
             private static readonly MethodInfo m_ToUpper = AccessTools.Method(typeof(string), nameof(string.ToUpper));
             private static readonly MethodInfo m_Command = AccessTools.PropertyGetter(typeof(ICommand), nameof(ICommand.Command));
 
-            public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+            public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, MethodBase original)
             {
                 var codeInstructions = instructions.ToList();
 
@@ -83,22 +37,28 @@ namespace SixModLoader.Api.Patches
                         break;
 
                     if (
-                        codeInstructions[i].opcode == OpCodes.Ldloc_0 &&
-                        codeInstructions[i + 1].opcode == OpCodes.Ldfld && ((FieldInfo) codeInstructions[i + 1].operand).Name == "query" && ((FieldInfo) codeInstructions[i + 1].operand).FieldType == typeof(string[]) &&
-                        codeInstructions[i + 2].opcode == OpCodes.Ldc_I4_0 &&
-                        codeInstructions[i + 3].opcode == OpCodes.Ldelem_Ref &&
-                        codeInstructions[i + 4].opcode == OpCodes.Callvirt && (MethodInfo) codeInstructions[i + 4].operand == m_ToUpper &&
-                        codeInstructions[i + 5].opcode == OpCodes.Ldstr && ((string) codeInstructions[i + 5].operand).StartsWith("#")
+                        (original == m_ProcessQuery
+                            ? codeInstructions[i].opcode == OpCodes.Ldfld && ((FieldInfo) codeInstructions[i].operand).Name == "query" && ((FieldInfo) codeInstructions[i].operand).FieldType == typeof(string[])
+                            : codeInstructions[i].opcode == OpCodes.Ldloc_0) &&
+                        codeInstructions[i + 1].opcode == OpCodes.Ldc_I4_0 &&
+                        codeInstructions[i + 2].opcode == OpCodes.Ldelem_Ref &&
+                        codeInstructions[i + 3].opcode == OpCodes.Callvirt && (MethodInfo) codeInstructions[i + 3].operand == m_ToUpper &&
+                        codeInstructions[i + 4].opcode == OpCodes.Ldstr && ((string) codeInstructions[i + 4].operand).StartsWith("#")
                     )
                     {
                         max--;
-                        codeInstructions.RemoveRange(i, 4);
-                        codeInstructions.InsertRange(i, new[]
+                        codeInstructions.RemoveRange(original == m_ProcessQuery ? i - 1 : i, original == m_ProcessQuery ? 4 : 3);
+                        codeInstructions.InsertRange(original == m_ProcessQuery ? i - 1 : i, new[]
                         {
-                            new CodeInstruction(OpCodes.Ldloc_S, 8),
+                            new CodeInstruction(OpCodes.Ldloc_S, original == m_ProcessQuery ? 8 : 1),
                             new CodeInstruction(OpCodes.Callvirt, m_Command)
                         });
                     }
+                }
+
+                if (max != 0)
+                {
+                    Logger.Error("ProcessQueryPatch failed!");
                 }
 
                 return codeInstructions;

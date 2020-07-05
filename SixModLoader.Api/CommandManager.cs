@@ -5,19 +5,13 @@ using System.Reflection;
 using CommandSystem;
 using HarmonyLib;
 using SixModLoader.Api.Extensions;
-using SixModLoader.Api.Patches;
 using SixModLoader.Mods;
 
 namespace SixModLoader.Api
 {
     public class CommandManager
     {
-        public static GameConsoleQueryCommandHandler GameConsoleQueryCommandHandler { get; } = GameConsoleQueryCommandHandler.Create();
-
-        public static List<ICommandHandler> CommandHandlers { get; } = new List<ICommandHandler>
-        {
-            GameConsoleQueryCommandHandler
-        };
+        public static List<ICommandHandler> CommandHandlers { get; } = new List<ICommandHandler>();
 
         public void RegisterCommands(ModContainer mod)
         {
@@ -39,12 +33,13 @@ namespace SixModLoader.Api
                 var commandHandler = CommandHandlers.FirstOrDefault(x => x.GetType().IsAssignableFrom(attribute.Type));
                 if (commandHandler == null)
                 {
-                    Logger.Warn($"Not found CommandHandler for {commandType}");
+                    Logger.Warn($"Not found {attribute.Type} for {commandType}");
                     continue;
                 }
 
                 if (commandHandler.AllCommands.All(x => x.GetType() != commandType))
                 {
+                    Logger.Debug($"Registering {commandType} in {attribute.Type}");
                     commandHandler.RegisterCommand((ICommand) AccessTools.CreateInstance(commandType));
                 }
             }
