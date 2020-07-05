@@ -8,6 +8,7 @@ jobs:
   build:
     # The type of runner that the job will run on
     runs-on: windows-latest
+    timeout-minutes: 6
     if: "! contains(github.event.head_commit.message, '[skip ci]')"
     
     env:
@@ -86,10 +87,10 @@ jobs:
       uses: DuckSoft/extract-7z-action@v1.0
       with:
         pathSource: docfx.zip
-        pathTarget: docfx
+        pathTarget: docs
 
     - name: Build Documentation
-      run: ./docfx/docfx.exe docs/docfx.json 
+      run: cd .\docs\; .\build.bat
 
     - name: Publish Documentation on GitHub Pages
       uses: peaceiris/actions-gh-pages@v3
