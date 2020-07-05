@@ -3,3 +3,5 @@
 
 /api/*.yml
 /api/.manifest
+
+/index.md
