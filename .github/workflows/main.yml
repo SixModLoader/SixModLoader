@@ -60,7 +60,8 @@ jobs:
         AssemblyPublicizer\AssemblyPublicizer.exe Assembly-CSharp.dll
         AssemblyPublicizer\AssemblyPublicizer.exe Mirror.dll
         
-    - uses: actions/cache@v2
+    - name: Cache NuGet
+      uses: actions/cache@v2
       with:
         path: ~/.nuget/packages
         key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
@@ -75,6 +76,19 @@ jobs:
 
     - name: Run build script
       run:  cd .\scripts\; .\build.bat
+
+    - uses: nikeee/docfx-action@master
+      name: Build Documentation
+      with:
+        args: docs/docfx.json
+
+    - uses: maxheld83/ghpages@master
+      name: Publish Documentation on GitHub Pages
+      if: ${{ github.event_name != 'pull_request }}
+      env:
+        BUILD_DIR: docs/_site
+        GH_PAT: ${{ secrets.GH_PAT }}
+        GITHUB_REPOSITORY: SixModLoader/sixmodloader.github.io
 
     - name: Upload a Build Artifact
       uses: actions/upload-artifact@v2
