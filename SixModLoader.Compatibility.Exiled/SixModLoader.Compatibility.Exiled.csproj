@@ -32,15 +32,6 @@
         <WarningLevel>4</WarningLevel>
     </PropertyGroup>
     <ItemGroup>
-        <Reference Include="Exiled.API, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null">
-            <HintPath>..\..\EXILED\bin\Debug\Exiled.API.dll</HintPath>
-        </Reference>
-        <Reference Include="Exiled.Events, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null">
-            <HintPath>..\..\EXILED\bin\Debug\Exiled.Events.dll</HintPath>
-        </Reference>
-        <Reference Include="Exiled.Loader, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null">
-            <HintPath>..\..\EXILED\bin\Debug\Exiled.Loader.dll</HintPath>
-        </Reference>
         <Reference Include="System" />
         <Reference Include="System.Core" />
         <Reference Include="System.Xml.Linq" />
@@ -72,6 +63,19 @@
     </ItemGroup>
     <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
     <Import Project="$(SolutionDir)\SCPSL.props" />
+    
+    <ItemGroup>
+        <!-- Exiled -->
+        <Reference Include="Exiled.API">
+            <HintPath>..\..\EXILED\bin\Debug\Exiled.API.dll</HintPath>
+        </Reference>
+        <Reference Include="Exiled.Events">
+            <HintPath>..\..\EXILED\bin\Debug\Exiled.Events.dll</HintPath>
+        </Reference>
+        <Reference Include="Exiled.Loader">
+            <HintPath>..\..\EXILED\bin\Debug\Exiled.Loader.dll</HintPath>
+        </Reference>
+    </ItemGroup>
 
     <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
         <PostBuildEvent>copy $(TargetDir)\$(AssemblyName).dll $(SCPSL_SERVER)\SixModLoader\Mods\ &amp;&amp; copy $(TargetDir)\Newtonsoft.Json.dll $(SCPSL_SERVER)\SixModLoader\bin</PostBuildEvent>
