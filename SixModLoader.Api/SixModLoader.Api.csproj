@@ -50,6 +50,7 @@
         <Compile Include="Configuration\Converters\EventYamlTypeConverter.cs" />
         <Compile Include="Configuration\Converters\VectorsConverter.cs" />
         <Compile Include="Configuration\ForceQuotedStringValuesEventEmitter.cs" />
+        <Compile Include="CustomEffectManager.cs" />
         <Compile Include="Events\Player\Inventory\PlayerChangeItemEvent.cs" />
         <Compile Include="Events\Player\Inventory\PlayerDropItemEvent.cs" />
         <Compile Include="Events\Player\Inventory\PlayerDroppedItemEvent.cs" />

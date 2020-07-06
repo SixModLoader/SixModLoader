@@ -15,6 +15,7 @@ namespace SixModLoader.Api
         public Harmony Harmony { get; } = new Harmony("pl.js6pak.SixModLoaderApi");
         
         public CommandManager CommandManager { get; } = new CommandManager();
+        public CustomEffectManager CustomEffectManager { get; } = new CustomEffectManager();
 
         public SixModLoaderApi(SixModLoader loader)
         {

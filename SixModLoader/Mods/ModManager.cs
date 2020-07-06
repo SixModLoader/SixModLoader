@@ -118,6 +118,7 @@ namespace SixModLoader.Mods
                             break;
                         }
 
+                        Loader.ServiceCollection.AddSingleton(modContainer);
                         toLoad.Add(modContainer);
                         break;
                     }
@@ -127,8 +128,6 @@ namespace SixModLoader.Mods
                 {
                     var type = modContainer.Type;
                     var modsAttribute = modContainer.Info;
-
-                    Loader.ServiceCollection.AddSingleton(modContainer);
 
                     var constructor = type.GetConstructors()[0];
                     var parameters = new List<object>();
@@ -164,6 +163,8 @@ namespace SixModLoader.Mods
                     modContainer.AbstractInstance = modInstance;
 
                     Loader.EventManager.Register(modInstance);
+                    Loader.ServiceCollection.AddSingleton(type, modInstance);
+
                     Logger.Info($"Loaded {modsAttribute}");
                     Mods.Add(modContainer);
                 }
