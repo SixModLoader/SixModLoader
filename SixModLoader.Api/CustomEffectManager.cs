@@ -49,12 +49,19 @@ namespace SixModLoader.Api
             {
                 __state = null;
 
-                if (ReferenceHub.HostHub == null)
+                try
+                {
+                    if (PlayerManager.localPlayer == null || PlayerManager.hostHub == null || ReferenceHub.HostHub == null)
+                        return;
+                }
+                catch (NullReferenceException)
+                {
                     return;
+                }
 
                 if (ReferenceHub.Hubs.Values.All(x => x.playerEffectsController.syncEffectsIntensity != __instance))
                     return;
-                
+
                 Logger.Debug("Hiding custom effects (all)");
 
                 __state = __instance.objects.ToList();
@@ -67,7 +74,7 @@ namespace SixModLoader.Api
                         __instance.objects.RemoveAt(i);
                     }
                 }
-                
+
                 __instance.Flush();
             }
 
@@ -96,10 +103,10 @@ namespace SixModLoader.Api
 
                 if (ReferenceHub.HostHub == null)
                     return;
-                
+
                 if (ReferenceHub.Hubs.Values.All(x => x.playerEffectsController.syncEffectsIntensity != __instance))
                     return;
-                
+
                 Logger.Debug("Hiding custom effects (delta)");
 
                 var effects = ReferenceHub.HostHub.playerEffectsController.AllEffects.Keys;

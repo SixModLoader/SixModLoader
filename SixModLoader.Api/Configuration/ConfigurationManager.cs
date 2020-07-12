@@ -82,6 +82,14 @@ namespace SixModLoader.Api.Configuration
             Serializer = serializerBuilder.Build();
         }
 
+        public static void Initialize()
+        {
+            SixModLoader.Instance.Harmony
+                .CreateProcessor(AccessTools.Method(typeof(ModEvent), nameof(ModEvent.Call), new Type[0]))
+                .AddPrefix(AccessTools.Method(typeof(Patch), nameof(Patch.Prefix)))
+                .Patch();
+        }
+
         public static T LoadConfigurationFile<T>(string file) where T : new()
         {
             return (T) LoadConfigurationFile(typeof(T), file, new T());
@@ -108,10 +116,9 @@ namespace SixModLoader.Api.Configuration
             return obj;
         }
 
-        [HarmonyPatch(typeof(ModEvent), nameof(ModEvent.Call), new Type[0])]
         public class Patch
         {
-            private static void Prefix(ModEvent __instance)
+            public static void Prefix(ModEvent __instance)
             {
                 if (__instance.GetType() != typeof(ModReloadEvent))
                     return;

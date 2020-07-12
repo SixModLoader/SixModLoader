@@ -37,7 +37,11 @@ namespace SixModLoader.Api.Extensions
         public void KillCoroutines()
         {
             CurrentMessage = null;
-            Timing.KillCoroutines(Player.gameObject);
+
+            if (Player != null && Player.gameObject != null)
+            {
+                Timing.KillCoroutines(Player.gameObject);
+            }
         }
 
         public BroadcastConnection(ReferenceHub player)
@@ -74,11 +78,6 @@ namespace SixModLoader.Api.Extensions
         internal static void OnPlayerJoined(PlayerJoinedEvent ev)
         {
             var connection = ev.Player.networkIdentity.connectionToClient;
-            if (Connections.TryGetValue(connection, out var broadcastConnection))
-            {
-                broadcastConnection.KillCoroutines();
-            }
-
             Connections[connection] = new BroadcastConnection(ev.Player);
         }
 

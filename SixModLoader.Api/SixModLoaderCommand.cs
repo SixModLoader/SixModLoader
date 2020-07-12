@@ -55,6 +55,7 @@ namespace SixModLoader.Api
                     }
 
                     response = $"{mod.Info.Name}\n" +
+                               $"Id: {mod.Info.Id}\n" +
                                $"Version: {mod.Info.Version}\n" +
                                $"{"Author".Pluralize(mod.Info.Authors.Length)}: {string.Join(", ", mod.Info.Authors)}\n" +
                                $"Type: {mod.Type}\n" +

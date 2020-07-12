@@ -20,20 +20,25 @@ namespace SixModLoader.Mods
     public class ModAttribute : Attribute
     {
         internal bool Auto { get; set; }
+        public string Id { get; }
         public string Name { get; private set; }
         public SemanticVersion Version { get; private set; }
         public string[] Authors { get; private set; }
 
+        public IdentifiedLogger Logger { get; private set; }
+        
         public override string ToString()
         {
             return $"{Name} ({Version})";
         }
 
-        public ModAttribute(string name, string version, string[] authors)
+        public ModAttribute(string id, string name, string version, string[] authors)
         {
+            Id = id;
             Name = name;
             Version = SemanticVersion.Parse(version);
             Authors = authors;
+            Logger = new IdentifiedLogger(Name);
         }
 
         /// <summary>
@@ -42,8 +47,9 @@ namespace SixModLoader.Mods
         /// <br/><see cref="Version"/> from <see cref="AssemblyName.Version"/> and <see cref="VersionLabelsAttribute.Labels"/>
         /// <br/><see cref="Authors"/> from <see cref="AssemblyCompanyAttribute.Company"/> (split by ",")
         /// </summary>
-        public ModAttribute()
+        public ModAttribute(string id)
         {
+            Id = id;
             Auto = true;
         }
 
@@ -59,6 +65,7 @@ namespace SixModLoader.Mods
                 Name = assembly.GetCustomAttribute<AssemblyTitleAttribute>()?.Title ?? assemblyName.Name;
                 Version = new SemanticVersion(assemblyName.Version.Major, assemblyName.Version.Minor, assemblyName.Version.Build, assembly.GetCustomAttribute<VersionLabelsAttribute>()?.Labels);
                 Authors = assembly.GetCustomAttribute<AssemblyCompanyAttribute>()?.Company?.Split(',').Select(x => x.Trim()).ToArray() ?? new string[0];
+                Logger = new IdentifiedLogger(Name);
             }
         }
     }

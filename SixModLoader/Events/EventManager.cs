@@ -89,5 +89,23 @@ namespace SixModLoader.Events
                 Logger.Debug($"Registered {attribute.EventType} handler {methodInfo.Name}");
             }
         }
+        
+        public void Unregister(object obj)
+        {
+            Unregister(obj.GetType(), obj);
+        }
+
+        public void UnregisterStatic(Type type)
+        {
+            Unregister(type, null);
+        }
+
+        public void Unregister(Type type, object obj)
+        {
+            foreach (var pair in Handlers)
+            {
+                pair.Value.RemoveAll(x => x.Method.DeclaringType == type && x.Instance == obj);
+            }
+        }
     }
 }

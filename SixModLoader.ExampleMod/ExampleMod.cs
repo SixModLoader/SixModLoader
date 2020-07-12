@@ -12,7 +12,7 @@ namespace SixModLoader.ExampleMod
         public string X { get; set; } = "Hello!";
     }
     
-    [Mod]
+    [Mod("SixModLoader.ExampleMod")]
     public class ExampleMod
     {
         [Inject]

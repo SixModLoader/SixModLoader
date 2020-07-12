@@ -15,10 +15,11 @@ using UnityEngine;
 
 namespace SixModLoader.DevTools
 {
-    [Mod]
+    [Mod("SixModLoader.DevTools")]
     public class SixApiDevToolsMod
     {
-        public Harmony Harmony { get; } = new Harmony("pl.js6pak.SixModLoader.DevTools");
+        [AutoHarmony]
+        public Harmony Harmony { get; set; }
         
         [EventHandler]
         private void OnPlayerJoined(PlayerJoinedEvent ev)

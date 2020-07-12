@@ -17,6 +17,7 @@ namespace SixModLoader
     public static class Logger
     {
         public static string FilePath => Path.Combine(SixModLoader.Instance.DataPath, "log.txt");
+        public static IdentifiedLogger Unknown { get; } = new IdentifiedLogger("UNKNOWN");
 
         public static void SafeDeleteFile(string path)
         {
@@ -34,18 +35,55 @@ namespace SixModLoader
             SafeDeleteFile(FilePath);
         }
 
-        public static void Log(string message, LogLevel level, ConsoleColor color = ConsoleColor.Gray, Assembly assembly = null)
+        public static IdentifiedLogger GetLogger(Assembly assembly)
         {
-            assembly = assembly ?? Assembly.GetCallingAssembly();
-            var name = typeof(Logger).Assembly == assembly ? "SixModLoader" : SixModLoader.Instance.ModManager.GetMod(assembly)?.Info?.Name ?? "UNKNOWN";
+            return SixModLoader.Instance.ModManager.GetMod(assembly)?.Info?.Logger ?? Unknown;
+        }
 
-            message = $"[{Enum.GetName(typeof(LogLevel), level)?.ToUpper()}] [{name}] {message}";
+        public static void Info(object message)
+        {
+            GetLogger(Assembly.GetCallingAssembly()).Info(message);
+        }
+
+        public static void Debug(object message)
+        {
+            GetLogger(Assembly.GetCallingAssembly()).Debug(message);
+        }
+
+        public static void Warn(object message)
+        {
+            GetLogger(Assembly.GetCallingAssembly()).Warn(message);
+        }
+
+        public static void Error(object message)
+        {
+            GetLogger(Assembly.GetCallingAssembly()).Error(message);
+        }
+    }
+
+    public class IdentifiedLogger
+    {
+        public string Identifier { get; set; }
+
+        public IdentifiedLogger(string identifier)
+        {
+            Identifier = identifier;
+        }
+
+        public void Log(string message, LogLevel level, ConsoleColor color = ConsoleColor.Gray)
+        {
+            message = $"[{Enum.GetName(typeof(LogLevel), level)?.ToUpper()}] [{Identifier}] {message}";
             if (ServerStatic.ServerOutput == null || !(ServerStatic.ServerOutput is StandardOutput))
             {
                 Console.WriteLine(message);
             }
 
-            File.AppendAllText(FilePath, message + "\n");
+            File.AppendAllText(Logger.FilePath, message + "\n");
+
+#if !DEBUG
+            if (level == LogLevel.Debug)
+                return;
+#endif
 
             if (ServerStatic.ServerOutput != null)
             {
@@ -53,26 +91,24 @@ namespace SixModLoader
             }
         }
 
-        public static void Info(object message, ConsoleColor color = ConsoleColor.White)
+        public void Info(object message)
         {
-            Log(message?.ToString(), LogLevel.Info, color, Assembly.GetCallingAssembly());
+            Log(message?.ToString(), LogLevel.Info, ConsoleColor.White);
         }
 
-        public static void Debug(object message, ConsoleColor color = ConsoleColor.Gray)
+        public void Debug(object message)
         {
-#if DEBUG
-            Log(message?.ToString(), LogLevel.Debug, color, Assembly.GetCallingAssembly());
-#endif
+            Log(message?.ToString(), LogLevel.Debug);
         }
 
-        public static void Warn(object message, ConsoleColor color = ConsoleColor.Yellow)
+        public void Warn(object message)
         {
-            Log(message?.ToString(), LogLevel.Warning, color, Assembly.GetCallingAssembly());
+            Log(message?.ToString(), LogLevel.Warning, ConsoleColor.Yellow);
         }
 
-        public static void Error(object message, ConsoleColor color = ConsoleColor.Red)
+        public void Error(object message)
         {
-            Log(message?.ToString(), LogLevel.Error, color, Assembly.GetCallingAssembly());
+            Log(message?.ToString(), LogLevel.Error, ConsoleColor.Red);
         }
     }
 }

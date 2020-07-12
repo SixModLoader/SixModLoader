@@ -10,7 +10,7 @@ using UnityEngine.SceneManagement;
 
 namespace SixModLoader
 {
-    [Mod]
+    [Mod("SixModLoader")]
     public class SixModLoader
     {
         internal static void Main(string[] args)
@@ -24,7 +24,7 @@ namespace SixModLoader
 
         public string[] CompatibleGameVersions { get; } =
         {
-            "10.0.0 (Scopophobia Public Beta XIX)"
+            "10.0.0 (Scopophobia Public Beta XX)"
         };
 
         public bool IsGameCompatible => CompatibleGameVersions.Contains(CustomNetworkManager.CompatibleVersions[0]);
@@ -40,7 +40,7 @@ namespace SixModLoader
         {
             ModManager = new ModManager(this);
 
-            DataPath = "SixModLoader";
+            DataPath = Path.GetFullPath("SixModLoader");
             BinPath = Path.Combine(DataPath, "bin");
             ModsPath = Path.Combine(DataPath, "Mods");
             FileLog.logPath = Path.Combine(DataPath, "harmony.log.txt");
@@ -94,8 +94,8 @@ namespace SixModLoader
                     Logger.Warn("This SixModLoader build was designed for other SCP:SL version!");
                 }
 
-                new ModEnableEvent().Call();
                 new ModReloadEvent().Call();
+                new ModEnableEvent().Call();
             };
 
             ModManager.Load();

@@ -9,10 +9,10 @@ using SixModLoader.Mods;
 
 namespace SixModLoader.Api
 {
-    [Mod]
+    [Mod("SixModLoader.SixModLoaderApi")]
     public class SixModLoaderApi
     {
-        public Harmony Harmony { get; } = new Harmony("pl.js6pak.SixModLoaderApi");
+        public Harmony Harmony { get; } = new Harmony("SixModLoader.SixModLoaderApi");
         
         public CommandManager CommandManager { get; } = new CommandManager();
         public CustomEffectManager CustomEffectManager { get; } = new CustomEffectManager();
@@ -21,6 +21,8 @@ namespace SixModLoader.Api
         {
             loader.EventManager.RegisterStatic(typeof(BroadcastExtensions));
             loader.EventManager.RegisterStatic(typeof(ConfigurationManager));
+            ConfigurationManager.Initialize();
+            HarmonyExtensions.Initialize();
         }
 
         [EventHandler(typeof(ModEnableEvent))]
@@ -32,7 +34,7 @@ namespace SixModLoader.Api
         [EventHandler(typeof(ModDisableEvent))]
         public void OnDisable()
         {
-            Harmony.UnpatchAll();
+            Harmony.UnpatchAll(Harmony.Id);
         }
         
         [EventHandler(typeof(ServerConsoleReadyEvent))]

@@ -24,5 +24,5 @@ using SixModLoader.Mods;
 [assembly: Guid("aaa2cf45-fab8-4ee5-9fd5-3b2d12a41d6e")]
 
 [assembly: AssemblyVersion("0.1.0")]
-[assembly: VersionLabels("pre.4")]
+[assembly: VersionLabels("pre.5")]
 [assembly: Priority(Priority.High)]

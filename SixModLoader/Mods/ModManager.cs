@@ -14,7 +14,7 @@ namespace SixModLoader.Mods
         public Assembly Assembly { get; internal set; }
         public Type Type { get; internal set; }
         public int Priority { get; internal set; } = (int) global::SixModLoader.Priority.Normal;
-
+        
         public string File { get; internal set; }
         public string Directory => Path.Combine(SixModLoader.Instance.ModsPath, Info.Name.Replace(" ", "-"));
 
@@ -106,19 +106,26 @@ namespace SixModLoader.Mods
                             continue;
                         }
 
-                        var modContainer = (ModContainer) Activator.CreateInstance(typeof(ModContainer<>).MakeGenericType(type));
+                        var modContainerType = typeof(ModContainer<>).MakeGenericType(type);
+                        var modContainer = (ModContainer) Activator.CreateInstance(modContainerType);
                         modContainer.Assembly = assembly;
                         modContainer.Type = type;
                         modContainer.File = file;
                         modContainer.Info = modsAttribute;
 
+                        if (toLoad.Any(x => x.Info.Id == modContainer.Info.Id))
+                        {
+                            Logger.Error($"Duplicate mod with id {modContainer.Info.Id}");
+                            break;
+                        }
+                        
                         if (toLoad.Any(x => x.Info.Name == modContainer.Info.Name))
                         {
                             Logger.Error($"Duplicate mod with name {modContainer.Info.Name}");
                             break;
                         }
 
-                        Loader.ServiceCollection.AddSingleton(modContainer);
+                        Loader.ServiceCollection.AddSingleton(modContainerType, modContainer);
                         toLoad.Add(modContainer);
                         break;
                     }
@@ -134,7 +141,11 @@ namespace SixModLoader.Mods
                     foreach (var parameter in constructor.GetParameters())
                     {
                         var service = Loader.Services.GetService(parameter.ParameterType);
-                        if (service != null)
+                        if (parameter.ParameterType == typeof(ModContainer))
+                        {
+                            parameters.Add(modContainer);
+                        }
+                        else if (service != null)
                         {
                             parameters.Add(service);
                         }
@@ -150,7 +161,11 @@ namespace SixModLoader.Mods
                     foreach (var property in type.GetProperties(AccessTools.all).Where(x => x.GetCustomAttribute<InjectAttribute>() != null))
                     {
                         var service = Loader.Services.GetService(property.PropertyType);
-                        if (service != null)
+                        if (property.PropertyType == typeof(ModContainer))
+                        {
+                            property.SetValue(modInstance, modContainer);
+                        }
+                        else if (service != null)
                         {
                             property.SetValue(modInstance, service);
                         }

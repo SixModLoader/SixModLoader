@@ -4,14 +4,16 @@ using System.Reflection;
 using System.Threading.Tasks;
 using Exiled.API.Enums;
 using Exiled.API.Features;
+using HarmonyLib;
 using MEC;
 using SixModLoader.Api.Events.Server;
+using SixModLoader.Api.Extensions;
 using SixModLoader.Events;
 using SixModLoader.Mods;
 
 namespace SixModLoader.Compatibility.Exiled
 {
-    [Mod]
+    [Mod("SixModLoader.Compatibility.Exiled")]
     public class ExiledMod
     {
         public SixModLoader Loader { get; }
@@ -19,6 +21,9 @@ namespace SixModLoader.Compatibility.Exiled
         public bool Loaded { get; set; }
         public string ModPath { get; }
 
+        [AutoHarmony]
+        public Harmony Harmony { get; set; }
+        
         public ExiledMod(SixModLoader loader)
         {
             Loader = loader;
@@ -79,6 +84,18 @@ namespace SixModLoader.Compatibility.Exiled
             }).Wait();
         }
 
+        public static bool PathsPatch()
+        {
+            Logger.Info("Overwrote Exiled paths");
+            Paths.Exiled = SixModLoader.Instance.ModManager.GetMod<ExiledMod>().Instance.ModPath;
+            Paths.Plugins = Path.Combine(Paths.Exiled, "Plugins");
+            Paths.Configs = Paths.Exiled;
+            Paths.Config = Path.Combine(Paths.Exiled, "config.yml");
+            Paths.Log = Path.Combine(Paths.Exiled, "ra.log.txt");
+            Paths.Dependencies = Path.Combine(Paths.Plugins, "dependencies");
+            return false;
+        }
+
         [EventHandler(typeof(ServerConsoleReadyEvent))]
         public void OnServerConsoleReady()
         {
@@ -86,18 +103,15 @@ namespace SixModLoader.Compatibility.Exiled
                 return;
 
             Logger.Info("Loading Exiled plugins");
-            Paths.Exiled = ModPath;
-            Paths.Plugins = Path.Combine(Paths.Exiled, "Plugins");
-            Paths.Config = Path.Combine(Paths.Exiled, "config.yml");
-            Paths.Log = Path.Combine(Paths.Exiled, $"ra.log.txt");
-            Paths.Dependencies = Path.Combine(Paths.Plugins, "dependencies");
-
+            Harmony.Patch(AccessTools.Method(typeof(Paths), nameof(Paths.Reload)), new HarmonyMethod(typeof(ExiledMod), nameof(PathsPatch)));
+            Paths.Reload();
+            
             File.Open(Paths.Config, FileMode.OpenOrCreate, FileAccess.Read).Dispose();
             Timing.CallDelayed(0.25f, () =>
             {
                 global::Exiled.Loader.Loader.Config.Environment = EnvironmentType.Production;
                 global::Exiled.Loader.Loader.Run();
-
+                
                 try
                 {
                     EventManager.Instance.Register(new EventsCompatibility());
