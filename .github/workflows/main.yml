@@ -113,7 +113,8 @@ jobs:
 
     - name: Push NuGet package
       if: ${{ github.event_name	== 'release' }}
-      run: |  
+      run: |
+        cd out
         nuget pack ../SixModLoader
         nuget pack ../SixModLoader.Api
         nuget sources add -Name github -Source https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json -username ${{ github.repository_owner }} -password ${{ github.token }}
