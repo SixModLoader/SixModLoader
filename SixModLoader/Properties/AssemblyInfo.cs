@@ -1,6 +1,5 @@
 ﻿using System.Reflection;
 using System.Runtime.InteropServices;
-using SixModLoader.Mods;
 
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
@@ -23,4 +22,4 @@ using SixModLoader.Mods;
 [assembly: Guid("22281b95-bf42-492d-a975-f5e87cdd4530")]
 
 [assembly: AssemblyVersion("0.1.0")]
-[assembly: VersionLabels("pre.5")]
+[assembly: AssemblyInformationalVersion("0.1.0-pre.5")]

@@ -5,17 +5,6 @@ using NuGet.Versioning;
 
 namespace SixModLoader.Mods
 {
-    [AttributeUsage(AttributeTargets.Assembly)]
-    public class VersionLabelsAttribute : Attribute
-    {
-        public string Labels { get; }
-
-        public VersionLabelsAttribute(string labels)
-        {
-            Labels = labels;
-        }
-    }
-
     [AttributeUsage(AttributeTargets.Class)]
     public class ModAttribute : Attribute
     {
@@ -63,9 +52,11 @@ namespace SixModLoader.Mods
                 var assemblyName = assembly.GetName();
 
                 Name = assembly.GetCustomAttribute<AssemblyTitleAttribute>()?.Title ?? assemblyName.Name;
-                Version = new SemanticVersion(assemblyName.Version.Major, assemblyName.Version.Minor, assemblyName.Version.Build, assembly.GetCustomAttribute<VersionLabelsAttribute>()?.Labels);
                 Authors = assembly.GetCustomAttribute<AssemblyCompanyAttribute>()?.Company?.Split(',').Select(x => x.Trim()).ToArray() ?? new string[0];
                 Logger = new IdentifiedLogger(Name);
+
+                var version = assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion;
+                Version = version != null ? SemanticVersion.Parse(version) : new SemanticVersion(assemblyName.Version.Major, assemblyName.Version.Minor, assemblyName.Version.Build);
             }
         }
     }

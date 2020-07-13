@@ -49,4 +49,12 @@
       <Content Include="Assets\sixmodloader_logo.ico" />
     </ItemGroup>
     <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+
+    <Target Name="Copy" AfterTargets="Build">
+        <ItemGroup>
+            <OutputFiles Include="$(OutputPath)$(AssemblyName).exe" />
+        </ItemGroup>
+        <Copy SourceFiles="@(OutputFiles)" DestinationFolder="$(SCPSL_SERVER)\" Condition="'$(Configuration)' == 'Debug'" />
+        <Copy SourceFiles="@(OutputFiles)" DestinationFolder="$(SolutionDir)\out\" Condition="'$(Configuration)' == 'Release'" />
+    </Target>
 </Project>

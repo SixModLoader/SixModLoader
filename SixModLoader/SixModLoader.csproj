@@ -15,6 +15,7 @@
         <TargetFrameworkProfile />
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
         <LangVersion>latest</LangVersion>
+        <Description>Experimental experiment</Description>
     </PropertyGroup>
     <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
         <DebugSymbols>true</DebugSymbols>
@@ -59,11 +60,12 @@
     </ItemGroup>
     <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
     <Import Project="$(SolutionDir)\SCPSL.props" />
-    
-    <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
-        <PostBuildEvent>copy $(TargetDir)\*.dll $(SCPSL_SERVER)\SixModLoader\bin\</PostBuildEvent>
-    </PropertyGroup>
-    <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
-        <PostBuildEvent>copy $(TargetDir)\*.dll $(SolutionDir)\out\bin\</PostBuildEvent>
-    </PropertyGroup>
+
+    <Target Name="Copy" AfterTargets="Build">
+        <ItemGroup>
+            <OutputFiles Include="$(OutputPath)*.dll" />
+        </ItemGroup>
+        <Copy SourceFiles="@(OutputFiles)" DestinationFolder="$(SCPSL_SERVER)\SixModLoader\bin\" Condition="'$(Configuration)' == 'Debug'" />
+        <Copy SourceFiles="@(OutputFiles)" DestinationFolder="$(SolutionDir)\out\bin\" Condition="'$(Configuration)' == 'Release'" />
+    </Target>
 </Project>

@@ -77,10 +77,11 @@
         </Reference>
     </ItemGroup>
 
-    <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
-        <PostBuildEvent>copy $(TargetDir)\$(AssemblyName).dll $(SCPSL_SERVER)\SixModLoader\Mods\ &amp;&amp; copy $(TargetDir)\Newtonsoft.Json.dll $(SCPSL_SERVER)\SixModLoader\bin</PostBuildEvent>
-    </PropertyGroup>
-    <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
-        <PostBuildEvent>copy $(TargetDir)\$(AssemblyName).dll $(SolutionDir)\out\Mods\ &amp;&amp; copy $(TargetDir)\Newtonsoft.Json.dll $(SolutionDir)\out\bin</PostBuildEvent>
-    </PropertyGroup>
+    <Target Name="Copy" AfterTargets="Build">
+        <ItemGroup>
+            <OutputFiles Include="$(OutputPath)$(AssemblyName).dll" />
+        </ItemGroup>
+        <Copy SourceFiles="@(OutputFiles)" DestinationFolder="$(SCPSL_SERVER)\SixModLoader\Mods\" Condition="'$(Configuration)' == 'Debug'" />
+        <Copy SourceFiles="@(OutputFiles)" DestinationFolder="$(SolutionDir)\out\Mods\" Condition="'$(Configuration)' == 'Release'" />
+    </Target>
 </Project>
