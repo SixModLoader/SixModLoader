@@ -39,12 +39,13 @@ jobs:
       with:
         pathSource: steamcmd.zip
         pathTarget: scripts
-    
-    - name: Cache SCP:SL
-      uses: actions/cache@v2
-      with:
-        path: ${{ env.SCPSL_SERVER }}
-        key: scpsl
+  
+#   TODO: Cache only Managed folder somehow
+#     - name: Cache SCP:SL
+#       uses: actions/cache@v2
+#       with:
+#         path: ${{ env.SCPSL_SERVER }}
+#         key: scpsl
     
     - name: Run SCP:SL download script
       run:  cd .\scripts\; .\scpsl.bat
