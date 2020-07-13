@@ -1,6 +1,11 @@
 name: CI
 
-on: [push, pull_request]
+on:
+  push:
+  pull_request:
+  release:
+    types:
+      - published
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -56,7 +61,7 @@ jobs:
         pathTarget: ${{ env.SCPSL_SERVER }}\SCPSL_Data\Managed
 
     - name: Publicize
-      run:  |
+      run: |
         cd ${{ env.SCPSL_SERVER }}\SCPSL_Data\Managed
         AssemblyPublicizer\AssemblyPublicizer.exe Assembly-CSharp.dll
         AssemblyPublicizer\AssemblyPublicizer.exe Mirror.dll
@@ -105,3 +110,11 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         path: out/
+
+    - name: Push NuGet package
+      if: ${{ github.event_name	== 'release' }}
+      run: |  
+        nuget pack ../SixModLoader
+        nuget pack ../SixModLoader.Api
+        nuget sources add -Name github -Source https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json -username ${{ github.repository_owner }} -password ${{ github.token }}
+        nuget push *.nupkg -source github
