@@ -2,8 +2,8 @@ name: CI
 
 on:
   push:
-   tags-ignore: 
-     - '*'
+    tags-ignore:
+      - '*'
   pull_request:
   release:
     types:
@@ -17,108 +17,100 @@ jobs:
     runs-on: windows-latest
     timeout-minutes: 10
     if: "! contains(github.event.head_commit.message, '[skip ci]')"
-    
+
     env:
       SCPSL_SERVER: ${{ github.workspace }}/scpsl
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-    # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-    - uses: actions/checkout@v2
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2
 
-    - name: Setup MSBuild
-      uses: microsoft/setup-msbuild@v1
-      
-    - name: Download steamcmd
-      uses: carlosperate/download-file-action@v1.0.3
-      with:
-        file-url: https://steamcdn-a.akamaihd.net/client/installer/steamcmd.zip
-    
-    - name: Extract steamcmd
-      uses: DuckSoft/extract-7z-action@v1.0
-      with:
-        pathSource: steamcmd.zip
-        pathTarget: scripts
-  
-#   TODO: Cache only Managed folder somehow
-#     - name: Cache SCP:SL
-#       uses: actions/cache@v2
-#       with:
-#         path: ${{ env.SCPSL_SERVER }}
-#         key: scpsl
-    
-    - name: Run SCP:SL download script
-      run:  cd .\scripts\; .\scpsl.bat
-      continue-on-error: true
+      - name: Setup MSBuild
+        uses: microsoft/setup-msbuild@v1
 
-    - name: Download AssemblyPublicizer
-      uses: carlosperate/download-file-action@v1.0.3
-      with:
-        file-url: https://github.com/CabbageCrow/AssemblyPublicizer/releases/download/v1.1.0/AssemblyPublicizer.zip
-        location: ${{ env.SCPSL_SERVER }}\SCPSL_Data\Managed
+      - name: Download DepotDownloader
+        uses: carlosperate/download-file-action@v1.0.3
+        with:
+          file-url: https://github.com/SteamRE/DepotDownloader/releases/download/DepotDownloader_2.3.6/depotdownloader-2.3.6.zip
 
-    - name: Extract AssemblyPublicizer
-      uses: DuckSoft/extract-7z-action@v1.0
-      with:
-        pathSource: ${{ env.SCPSL_SERVER }}\SCPSL_Data\Managed\AssemblyPublicizer.zip
-        pathTarget: ${{ env.SCPSL_SERVER }}\SCPSL_Data\Managed
+      - name: Extract DepotDownloader
+        uses: DuckSoft/extract-7z-action@v1.0
+        with:
+          pathSource: depotdownloader-2.3.6.zip
+          pathTarget: scripts
 
-    - name: Publicize
-      run: |
-        cd ${{ env.SCPSL_SERVER }}\SCPSL_Data\Managed
-        AssemblyPublicizer\AssemblyPublicizer.exe Assembly-CSharp.dll
-        AssemblyPublicizer\AssemblyPublicizer.exe Mirror.dll
-        
-    - name: Cache NuGet
-      uses: actions/cache@v2
-      with:
-        path: ~/.nuget/packages
-        key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
-        restore-keys: |
-          ${{ runner.os }}-nuget-
+      - name: Run SCP:SL download script
+        run:  cd .\scripts\; .\depotdownloader.bat -app 996560 -depot 996562 -filelist dependencies.txt -dir $Env:SCPSL_SERVER -beta scopophobia
 
-    - name: Setup NuGet
-      uses: NuGet/setup-nuget@v1.0.2
-      
-    - name: Restore NuGet
-      run: nuget restore
+      - name: Download AssemblyPublicizer
+        uses: carlosperate/download-file-action@v1.0.3
+        with:
+          file-url: https://github.com/CabbageCrow/AssemblyPublicizer/releases/download/v1.1.0/AssemblyPublicizer.zip
+          location: ${{ env.SCPSL_SERVER }}\SCPSL_Data\Managed
 
-    - name: Run build script
-      run:  cd .\scripts\; .\build.bat
+      - name: Extract AssemblyPublicizer
+        uses: DuckSoft/extract-7z-action@v1.0
+        with:
+          pathSource: ${{ env.SCPSL_SERVER }}\SCPSL_Data\Managed\AssemblyPublicizer.zip
+          pathTarget: ${{ env.SCPSL_SERVER }}\SCPSL_Data\Managed
 
-    - name: Download docfx
-      uses: carlosperate/download-file-action@v1.0.3
-      with:
-        file-url: https://github.com/dotnet/docfx/releases/download/v2.56/docfx.zip
-    
-    - name: Extract docfx
-      uses: DuckSoft/extract-7z-action@v1.0
-      with:
-        pathSource: docfx.zip
-        pathTarget: docs
+      - name: Publicize
+        run: |
+          cd ${{ env.SCPSL_SERVER }}\SCPSL_Data\Managed
+          AssemblyPublicizer\AssemblyPublicizer.exe Assembly-CSharp.dll
+          AssemblyPublicizer\AssemblyPublicizer.exe Mirror.dll
 
-    - name: Build Documentation
-      run: cd .\docs\; .\build.bat
+      - name: Cache NuGet
+        uses: actions/cache@v2
+        with:
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-nuget-
 
-    - name: Publish Documentation on GitHub Pages
-      uses: peaceiris/actions-gh-pages@v3
-      if: ${{ github.event_name != 'pull_request' }}
-      with:
-        personal_token: ${{ secrets.GH_PAT }}
-        publish_dir: ./docs/_site
-        external_repository: SixModLoader/sixmodloader.github.io
-        publish_branch: master
+      - name: Setup NuGet
+        uses: NuGet/setup-nuget@v1.0.2
 
-    - name: Upload a Build Artifact
-      uses: actions/upload-artifact@v2
-      with:
-        path: out/
+      - name: Restore NuGet
+        run: nuget restore
 
-    - name: Push NuGet package
-      if: ${{ github.event_name	== 'release' }}
-      run: |
-        cd out
-        nuget pack ../SixModLoader -Properties "Configuration=Release;commit=${{ github.sha }}"
-        nuget pack ../SixModLoader.Api -Properties "Configuration=Release;commit=${{ github.sha }}"
-        nuget sources add -Name github -Source https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json -username ${{ github.repository_owner }} -password ${{ github.token }}
-        nuget push *.nupkg -source github
+      - name: Run build script
+        run:  cd .\scripts\; .\build.bat
+
+      - name: Download docfx
+        uses: carlosperate/download-file-action@v1.0.3
+        with:
+          file-url: https://github.com/dotnet/docfx/releases/download/v2.56/docfx.zip
+
+      - name: Extract docfx
+        uses: DuckSoft/extract-7z-action@v1.0
+        with:
+          pathSource: docfx.zip
+          pathTarget: docs
+
+      - name: Build Documentation
+        run: cd .\docs\; .\build.bat
+
+      - name: Publish Documentation on GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        if: ${{ github.event_name != 'pull_request' }}
+        with:
+          personal_token: ${{ secrets.GH_PAT }}
+          publish_dir: ./docs/_site
+          external_repository: SixModLoader/sixmodloader.github.io
+          publish_branch: master
+
+      - name: Upload a Build Artifact
+        uses: actions/upload-artifact@v2
+        with:
+          path: out/
+
+      - name: Push NuGet package
+        if: ${{ github.event_name	== 'release' }}
+        run: |
+          cd out
+          nuget pack ../SixModLoader -Properties "Configuration=Release;commit=${{ github.sha }}"
+          nuget pack ../SixModLoader.Api -Properties "Configuration=Release;commit=${{ github.sha }}"
+          nuget sources add -Name github -Source https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json -username ${{ github.repository_owner }} -password ${{ github.token }}
+          nuget push *.nupkg -source github
