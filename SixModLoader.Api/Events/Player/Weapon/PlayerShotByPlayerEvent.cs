@@ -42,7 +42,7 @@ namespace SixModLoader.Api.Events.Player.Weapon
                 var codeInstructions = instructions.ToList();
 
                 var index = codeInstructions
-                    .FindIndex(x => x.opcode == OpCodes.Callvirt && (MethodInfo)x.operand == m_HurtPlayer) - 32;
+                    .FindIndex(x => x.opcode == OpCodes.Callvirt && (MethodInfo)x.operand == m_HurtPlayer) - 33;
                 
                 var label = iLGenerator.DefineLabel();
                 codeInstructions.Last().labels.Add(label);

@@ -1,6 +1,5 @@
 ﻿using System.IO;
 using System.Linq;
-using System.Reflection;
 using CommandSystem.Commands;
 using HarmonyLib;
 using Microsoft.Extensions.DependencyInjection;
@@ -25,7 +24,7 @@ namespace SixModLoader
 
         public string[] CompatibleGameVersions { get; } =
         {
-            "10.0.0 (Scopophobia Public Beta XXI)"
+            "10.0.0 (Scopophobia Public Beta XXIII)"
         };
 
         public bool IsGameCompatible => CompatibleGameVersions.Contains(CustomNetworkManager.CompatibleVersions[0]);
