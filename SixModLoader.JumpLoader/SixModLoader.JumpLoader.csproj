@@ -16,7 +16,7 @@
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
   </PropertyGroup>
   
-  <Target Name="Copy" AfterTargets="Build">
+  <Target Name="Copy" AfterTargets="Build"  Condition="'$(TargetFramework)' == 'net472'">
     <ItemGroup>
       <OutputFiles Include="$(OutputPath)$(AssemblyName).exe" />
     </ItemGroup>
