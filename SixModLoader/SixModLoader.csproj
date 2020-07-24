@@ -15,12 +15,12 @@
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
   </PropertyGroup>
   
-  <Import Project="$(SolutionDir)\SCPSL.props" />
+  <Import Project="$(ProjectDir)..\SCPSL.props" />
   <Target Name="Copy" AfterTargets="Build">
     <ItemGroup>
       <OutputFiles Include="$(OutputPath)*.dll" />
     </ItemGroup>
     <Copy SourceFiles="@(OutputFiles)" DestinationFolder="$(SCPSL_SERVER)\SixModLoader\bin\" Condition="'$(Configuration)' == 'Debug'" />
-    <Copy SourceFiles="@(OutputFiles)" DestinationFolder="$(SolutionDir)\out\bin\" Condition="'$(Configuration)' == 'Release'" />
+    <Copy SourceFiles="@(OutputFiles)" DestinationFolder="$(ProjectDir)..\out\bin\" Condition="'$(Configuration)' == 'Release'" />
   </Target>
 </Project>

@@ -24,9 +24,6 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
 
-      - name: Setup MSBuild
-        uses: microsoft/setup-msbuild@v1
-
       - name: Download DepotDownloader
         uses: carlosperate/download-file-action@v1.0.3
         with:
@@ -59,19 +56,8 @@ jobs:
           AssemblyPublicizer\AssemblyPublicizer.exe Assembly-CSharp.dll
           AssemblyPublicizer\AssemblyPublicizer.exe Mirror.dll
 
-      - name: Cache NuGet
-        uses: actions/cache@v2
-        with:
-          path: ~/.nuget/packages
-          key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-nuget-
-
-      - name: Setup NuGet
-        uses: NuGet/setup-nuget@v1.0.2
-
       - name: Restore NuGet
-        run: nuget restore
+        run: dotnet restore
 
       - name: Run build script
         run:  cd .\scripts\; .\build.bat
@@ -108,7 +94,7 @@ jobs:
         if: ${{ github.event_name	== 'release' }}
         run: |
           cd out
-          nuget pack ../SixModLoader -Properties "Configuration=Release;commit=${{ github.sha }}"
-          nuget pack ../SixModLoader.Api -Properties "Configuration=Release;commit=${{ github.sha }}"
-          nuget sources add -Name github -Source https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json -username ${{ github.repository_owner }} -password ${{ github.token }}
-          nuget push *.nupkg -source github
+          dotnet pack ../SixModLoader -c Release -o .
+          dotnet pack ../SixModLoader.Api -c Release -o .
+          dotnet nuget add source https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json -n github -u ${{ github.repository_owner }} -p ${{ github.token }}
+          dotnet nuget push *.nupkg -s github

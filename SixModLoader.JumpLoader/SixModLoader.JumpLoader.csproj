@@ -21,6 +21,6 @@
       <OutputFiles Include="$(OutputPath)$(AssemblyName).exe" />
     </ItemGroup>
     <Copy SourceFiles="@(OutputFiles)" DestinationFolder="$(SCPSL_SERVER)\" Condition="'$(Configuration)' == 'Debug'" />
-    <Copy SourceFiles="@(OutputFiles)" DestinationFolder="$(SolutionDir)\out\" Condition="'$(Configuration)' == 'Release'" />
+    <Copy SourceFiles="@(OutputFiles)" DestinationFolder="$(ProjectDir)..\out\" Condition="'$(Configuration)' == 'Release'" />
   </Target>
 </Project>

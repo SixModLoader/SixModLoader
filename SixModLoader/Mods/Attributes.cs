@@ -33,7 +33,7 @@ namespace SixModLoader.Mods
         /// <summary>
         /// Automatically get mod info from assembly
         /// <br/><see cref="Name"/> from <see cref="AssemblyTitleAttribute.Title"/> or <see cref="AssemblyName.Name"/>
-        /// <br/><see cref="Version"/> from <see cref="AssemblyName.Version"/> and <see cref="VersionLabelsAttribute.Labels"/>
+        /// <br/><see cref="Version"/> from <see cref="AssemblyInformationalVersionAttribute.InformationalVersion"/> or <see cref="AssemblyName.Version"/>
         /// <br/><see cref="Authors"/> from <see cref="AssemblyCompanyAttribute.Company"/> (split by ",")
         /// </summary>
         public ModAttribute(string id)

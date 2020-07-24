@@ -19,12 +19,12 @@
         <ProjectReference Include="..\SixModLoader\SixModLoader.csproj"/>
     </ItemGroup>
 
-    <Import Project="$(SolutionDir)\SCPSL.props"/>
+    <Import Project="$(ProjectDir)..\SCPSL.props" />
     <Target Name="Copy" AfterTargets="Build">
         <ItemGroup>
             <OutputFiles Include="$(OutputPath)$(AssemblyName).dll"/>
         </ItemGroup>
         <Copy SourceFiles="@(OutputFiles)" DestinationFolder="$(SCPSL_SERVER)\SixModLoader\Mods\" Condition="'$(Configuration)' == 'Debug'"/>
-        <Copy SourceFiles="@(OutputFiles)" DestinationFolder="$(SolutionDir)\out\Mods\" Condition="'$(Configuration)' == 'Release'"/>
+        <Copy SourceFiles="@(OutputFiles)" DestinationFolder="$(ProjectDir)..\out\Mods\" Condition="'$(Configuration)' == 'Release'"/>
     </Target>
 </Project>
