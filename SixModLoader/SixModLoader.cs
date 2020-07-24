@@ -22,7 +22,7 @@ namespace SixModLoader
 
         public SemanticVersion Version { get; internal set; }
 
-        public VersionRange TargetGameVersion { get; } = VersionRange.Parse("[10.0.0-rc.1]");
+        public VersionRange TargetGameVersion { get; } = VersionRange.Parse("[10.0.0]");
 
         public bool IsGameCompatible => TargetGameVersion.Satisfies(GameVersionParser.Parse().ToNuGetVersion());
 

@@ -36,7 +36,7 @@ jobs:
           pathTarget: scripts
 
       - name: Run SCP:SL download script
-        run:  cd .\scripts\; .\depotdownloader.bat -app 996560 -depot 996562 -filelist dependencies.txt -dir $Env:SCPSL_SERVER -beta scopophobia
+        run:  cd .\scripts\; .\depotdownloader.bat -app 996560 -depot 996562 -filelist dependencies.txt -dir $Env:SCPSL_SERVER
 
       - name: Download AssemblyPublicizer
         uses: carlosperate/download-file-action@v1.0.3
