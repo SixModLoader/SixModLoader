@@ -106,7 +106,10 @@ namespace SixModLoader.Api.Configuration
         {
             if (value is CommentsObjectDescriptor commentsDescriptor && commentsDescriptor.Comment != null)
             {
-                context.Emit(new Comment(commentsDescriptor.Comment, false));
+                foreach (var commentLine in commentsDescriptor.Comment.Split('\n'))
+                {
+                    context.Emit(new Comment(commentLine, false));
+                }
             }
 
             return base.EnterMapping(key, value, context);

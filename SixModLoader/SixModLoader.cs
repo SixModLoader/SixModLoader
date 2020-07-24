@@ -24,7 +24,7 @@ namespace SixModLoader
 
         public string[] CompatibleGameVersions { get; } =
         {
-            "10.0.0 (Scopophobia Public Beta XXIII)"
+            "10.0.0 (Release Candidate 1)"
         };
 
         public bool IsGameCompatible => CompatibleGameVersions.Contains(CustomNetworkManager.CompatibleVersions[0]);
