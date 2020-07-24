@@ -22,12 +22,9 @@ namespace SixModLoader
 
         public SemanticVersion Version { get; internal set; }
 
-        public string[] CompatibleGameVersions { get; } =
-        {
-            "10.0.0 (Release Candidate 1)"
-        };
+        public VersionRange TargetGameVersion { get; } = VersionRange.Parse("[10.0.0-rc.1]");
 
-        public bool IsGameCompatible => CompatibleGameVersions.Contains(CustomNetworkManager.CompatibleVersions[0]);
+        public bool IsGameCompatible => TargetGameVersion.Satisfies(GameVersionParser.Parse().ToNuGetVersion());
 
         public string DataPath { get; }
         public string BinPath { get; }
@@ -78,6 +75,7 @@ namespace SixModLoader
                     return;
                 loaded = true;
 
+                Logger.Error(GameVersionParser.Parse());
                 Harmony.PatchAll();
                 Logger.Debug($"Patched {Harmony.GetPatchedMethods().Count()} {"method".Pluralize(Harmony.GetPatchedMethods().Count())}");
 
@@ -87,7 +85,8 @@ namespace SixModLoader
 #if DEBUG
                                                   " - DEBUG BUILD (DON'T USE THIS IN PRODUCTION)" +
 #endif
-                                                  $"\nCompatible game versions: {CompatibleGameVersions.Join()} ({(IsGameCompatible ? "COMPATIBLE" : "INCOMPATIBLE")})";
+                                                  $"\nGame version: {GameVersionParser.Parse()}\n" +
+                                                  $"Compatible game versions: {TargetGameVersion.ToShortString()} ({(IsGameCompatible ? "COMPATIBLE" : "INCOMPATIBLE")})";
 
                 if (!IsGameCompatible)
                 {

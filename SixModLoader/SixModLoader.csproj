@@ -50,6 +50,7 @@
         <Compile Include="Events\Attributes.cs" />
         <Compile Include="Events\Event.cs" />
         <Compile Include="Events\EventManager.cs" />
+        <Compile Include="GameVersionParser.cs" />
         <Compile Include="Logger.cs" />
         <Compile Include="Mods\Events.cs" />
         <Compile Include="Priority.cs" />
