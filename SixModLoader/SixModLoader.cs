@@ -75,7 +75,6 @@ namespace SixModLoader
                     return;
                 loaded = true;
 
-                Logger.Error(GameVersionParser.Parse());
                 Harmony.PatchAll();
                 Logger.Debug($"Patched {Harmony.GetPatchedMethods().Count()} {"method".Pluralize(Harmony.GetPatchedMethods().Count())}");
 
