@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using HarmonyLib;
 using ServerOutput;
@@ -109,6 +110,10 @@ namespace SixModLoader
         public void Error(object message)
         {
             Log(message?.ToString(), LogLevel.Error, ConsoleColor.Red);
+            if (message is ReflectionTypeLoadException typeLoadException)
+            {
+                Error($"Exceptions: {typeLoadException.LoaderExceptions.Select(x => x.ToString()).Join()}");
+            }
         }
     }
 }

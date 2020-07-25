@@ -3,7 +3,7 @@
         <TargetFramework>net472</TargetFramework>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
         <LangVersion>latest</LangVersion>
-        
+
         <Description>SCP:SL api for SixModLoader</Description>
         <Version>0.1.0-pre.6</Version>
         <Authors>SixModLoader</Authors>
@@ -19,7 +19,12 @@
         <ProjectReference Include="..\SixModLoader\SixModLoader.csproj"/>
     </ItemGroup>
 
-    <Import Project="$(ProjectDir)..\SCPSL.props" />
+    <ItemGroup>
+        <PackageReference Include="System.IO.Compression" Version="4.3.0"/>
+        <PackageReference Include="System.Net.Http" Version="4.3.4"/>
+    </ItemGroup>
+
+    <Import Project="$(ProjectDir)..\SCPSL.props"/>
     <Target Name="Copy" AfterTargets="Build">
         <ItemGroup>
             <OutputFiles Include="$(OutputPath)$(AssemblyName).dll"/>

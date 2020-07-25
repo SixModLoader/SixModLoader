@@ -13,9 +13,10 @@ namespace SixModLoader.Api
     public class SixModLoaderApi
     {
         public Harmony Harmony { get; } = new Harmony("SixModLoader.SixModLoaderApi");
-        
+
         public CommandManager CommandManager { get; } = new CommandManager();
         public CustomEffectManager CustomEffectManager { get; } = new CustomEffectManager();
+        public LibraryManager LibraryManager { get; } = new LibraryManager();
 
         public SixModLoaderApi(SixModLoader loader)
         {
@@ -23,6 +24,7 @@ namespace SixModLoader.Api
             loader.EventManager.RegisterStatic(typeof(ConfigurationManager));
             ConfigurationManager.Initialize();
             HarmonyExtensions.Initialize();
+            LibraryManager.Download();
         }
 
         [EventHandler(typeof(ModEnableEvent))]
@@ -30,13 +32,13 @@ namespace SixModLoader.Api
         {
             Harmony.PatchAll();
         }
-        
+
         [EventHandler(typeof(ModDisableEvent))]
         public void OnDisable()
         {
             Harmony.UnpatchAll(Harmony.Id);
         }
-        
+
         [EventHandler(typeof(ServerConsoleReadyEvent))]
         public void OnServerConsoleReady()
         {
@@ -48,7 +50,7 @@ namespace SixModLoader.Api
                     GameCore.Console.singleton.ConsoleCommandHandler,
                     QueryProcessor.DotCommandHandler
                 });
-                
+
                 CommandManager.RegisterCommands(mod);
             }
         }

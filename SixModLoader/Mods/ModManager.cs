@@ -14,7 +14,7 @@ namespace SixModLoader.Mods
         public Assembly Assembly { get; internal set; }
         public Type Type { get; internal set; }
         public int Priority { get; internal set; } = (int) global::SixModLoader.Priority.Normal;
-        
+
         public string File { get; internal set; }
         public string Directory => Path.Combine(SixModLoader.Instance.ModsPath, Info.Name.Replace(" ", "-"));
 
@@ -55,7 +55,7 @@ namespace SixModLoader.Mods
     public class ModManager
     {
         public SixModLoader Loader { get; }
-        public List<ModContainer> Mods = new List<ModContainer>();
+        public List<ModContainer> Mods { get; } = new List<ModContainer>();
 
         public ModManager(SixModLoader loader)
         {
@@ -84,8 +84,6 @@ namespace SixModLoader.Mods
                     Logger.Debug($"Loaded {assembly}");
                 }
 
-                var toLoad = new List<ModContainer>();
-
                 foreach (var file in Directory.GetFiles(Loader.ModsPath))
                 {
                     if (!file.EndsWith(".dll")) continue;
@@ -113,25 +111,25 @@ namespace SixModLoader.Mods
                         modContainer.File = file;
                         modContainer.Info = modsAttribute;
 
-                        if (toLoad.Any(x => x.Info.Id == modContainer.Info.Id))
+                        if (Mods.Any(x => x.Info.Id == modContainer.Info.Id))
                         {
                             Logger.Error($"Duplicate mod with id {modContainer.Info.Id}");
                             break;
                         }
-                        
-                        if (toLoad.Any(x => x.Info.Name == modContainer.Info.Name))
+
+                        if (Mods.Any(x => x.Info.Name == modContainer.Info.Name))
                         {
                             Logger.Error($"Duplicate mod with name {modContainer.Info.Name}");
                             break;
                         }
 
                         Loader.ServiceCollection.AddSingleton(modContainerType, modContainer);
-                        toLoad.Add(modContainer);
+                        Mods.Add(modContainer);
                         break;
                     }
                 }
 
-                foreach (var modContainer in toLoad.OrderByDescending(x => x.Priority))
+                foreach (var modContainer in Mods.Where(x => x.AbstractInstance == null).OrderByDescending(x => x.Priority))
                 {
                     var type = modContainer.Type;
                     var modsAttribute = modContainer.Info;
@@ -181,17 +179,11 @@ namespace SixModLoader.Mods
                     Loader.ServiceCollection.AddSingleton(type, modInstance);
 
                     Logger.Info($"Loaded {modsAttribute}");
-                    Mods.Add(modContainer);
                 }
             }
             catch (Exception e)
             {
                 Logger.Error(e);
-                if (e is ReflectionTypeLoadException typeLoadException)
-                {
-                    Logger.Error($"Exceptions: {typeLoadException.LoaderExceptions.Select(x => x.ToString()).Join()}");
-                }
-
                 throw;
             }
 

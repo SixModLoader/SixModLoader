@@ -31,8 +31,6 @@
     <Target Name="Copy" AfterTargets="Build">
         <ItemGroup>
             <OutputFiles Include="$(OutputPath)$(AssemblyName).dll"/>
-            <OutputFiles Include="$(OutputPath)Newtonsoft.Json.dll"/>
-            <OutputFiles Include="$(OutputPath)SharpCompress.dll"/>
         </ItemGroup>
         <Copy SourceFiles="@(OutputFiles)" DestinationFolder="$(SCPSL_SERVER)\SixModLoader\Mods\" Condition="'$(Configuration)' == 'Debug'"/>
         <Copy SourceFiles="@(OutputFiles)" DestinationFolder="$(ProjectDir)..\out\Mods\" Condition="'$(Configuration)' == 'Release'"/>

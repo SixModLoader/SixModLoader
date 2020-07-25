@@ -39,7 +39,7 @@ namespace SixModLoader
 
             DataPath = Path.GetFullPath("SixModLoader");
             BinPath = Path.Combine(DataPath, "bin");
-            ModsPath = Path.Combine(DataPath, "Mods");
+            ModsPath = Path.Combine(DataPath, "mods");
             FileLog.logPath = Path.Combine(DataPath, "harmony.log.txt");
 
             ServiceCollection

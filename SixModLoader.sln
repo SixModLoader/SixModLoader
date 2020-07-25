@@ -12,6 +12,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{754189B4-E718-4D02-87CF-760344B52355}"
 	ProjectSection(SolutionItems) = preProject
 		SCPSL.props = SCPSL.props
+		NuGet.config = NuGet.config
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SixModLoader.DevTools", "SixModLoader.DevTools\SixModLoader.DevTools.csproj", "{1DCF7927-8DB3-471D-9D17-7934339B7798}"
