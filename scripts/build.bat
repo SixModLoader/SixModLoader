@@ -1,4 +1,4 @@
 mkdir ..\out
 mkdir ..\out\bin
-mkdir ..\out\Mods
+mkdir ..\out\mods
 dotnet build ..\SixModLoader.sln -c Release

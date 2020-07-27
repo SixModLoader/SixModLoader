@@ -29,7 +29,7 @@
         <ItemGroup>
             <OutputFiles Include="$(OutputPath)$(AssemblyName).dll"/>
         </ItemGroup>
-        <Copy SourceFiles="@(OutputFiles)" DestinationFolder="$(SCPSL_SERVER)\SixModLoader\Mods\" Condition="'$(Configuration)' == 'Debug'"/>
-        <Copy SourceFiles="@(OutputFiles)" DestinationFolder="$(ProjectDir)..\out\Mods\" Condition="'$(Configuration)' == 'Release'"/>
+        <Copy SourceFiles="@(OutputFiles)" DestinationFolder="$(SCPSL_SERVER)\SixModLoader\mods\" Condition="'$(Configuration)' == 'Debug'"/>
+        <Copy SourceFiles="@(OutputFiles)" DestinationFolder="$(ProjectDir)..\out\mods\" Condition="'$(Configuration)' == 'Release'"/>
     </Target>
 </Project>
