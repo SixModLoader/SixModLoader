@@ -22,7 +22,7 @@ namespace SixModLoader.Compatibility.Exiled
 {
     [Mod("SixModLoader.Compatibility.Exiled")]
     [NuGetLibrary("Newtonsoft.Json", "12.0.3", "net45")]
-    [NuPkgLibrary("SharpCompress", "0.25.1-default-encoding", "https://nuget.pkg.github.com/SixModLoader/download/SharpCompress/0.25.1-default-encoding/SharpCompress-0.25.1-default-encoding.nupkg", "net472")]
+    [NuGetLibrary("SharpCompress", "0.26.0", "net46")]
     public class ExiledMod
     {
         public SixModLoader Loader { get; }

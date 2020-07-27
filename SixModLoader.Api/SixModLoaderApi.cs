@@ -24,13 +24,13 @@ namespace SixModLoader.Api
             loader.EventManager.RegisterStatic(typeof(ConfigurationManager));
             ConfigurationManager.Initialize();
             HarmonyExtensions.Initialize();
-            LibraryManager.Download();
         }
 
         [EventHandler(typeof(ModEnableEvent))]
         public void OnEnable()
         {
             Harmony.PatchAll();
+            LibraryManager.Download();
         }
 
         [EventHandler(typeof(ModDisableEvent))]
@@ -42,6 +42,7 @@ namespace SixModLoader.Api
         [EventHandler(typeof(ServerConsoleReadyEvent))]
         public void OnServerConsoleReady()
         {
+            Logger.Debug("server console rdy");
             foreach (var mod in SixModLoader.Instance.ModManager.Mods)
             {
                 CommandManager.CommandHandlers.AddRange(new CommandHandler[]
