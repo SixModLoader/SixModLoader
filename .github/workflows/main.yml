@@ -99,14 +99,6 @@ jobs:
         with:
           path: out/
 
-      - name: Push NuGet package
-        if: ${{ github.event_name == 'release' }}
-        run: |
-          cd out
-          dotnet pack ../SixModLoader -c Release -o .
-          dotnet pack ../SixModLoader.Api -c Release -o .
-          dotnet nuget push *.nupkg
-
       - if: ${{ github.event_name == 'release' }}
         run: 7z a SixModLoader.zip ./out/*
 
@@ -120,4 +112,12 @@ jobs:
           upload_url: ${{ github.event.release.upload_url }}
           asset_path: ./SixModLoader.zip
           asset_name: SixModLoader.zip
-          asset_content_type: application/zip    
+          asset_content_type: application/zip  
+
+      - name: Push NuGet package
+        if: ${{ github.event_name == 'release' }}
+        run: |
+          cd out
+          dotnet pack ../SixModLoader -c Release -o .
+          dotnet pack ../SixModLoader.Api -c Release -o .
+          dotnet nuget push *.nupkg
