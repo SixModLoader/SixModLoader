@@ -24,6 +24,13 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
 
+      - name: Setup .NET Core SDK
+        uses: actions/setup-dotnet@v1.5.0
+        with:
+          source-url: https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json
+        env:
+          NUGET_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}  
+
       - name: Download DepotDownloader
         uses: carlosperate/download-file-action@v1.0.3
         with:
@@ -96,8 +103,7 @@ jobs:
           cd out
           dotnet pack ../SixModLoader -c Release -o .
           dotnet pack ../SixModLoader.Api -c Release -o .
-          dotnet nuget update source github --source https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json -u ${{ github.repository_owner }} -p ${{ github.token }}
-          dotnet nuget push *.nupkg -s github
+          dotnet nuget push *.nupkg
 
       - if: ${{ github.event_name == 'release' }}
         run: 7z a SixModLoader.zip ./out/*
