@@ -12,14 +12,14 @@ using NuGet.Versioning;
 namespace SixModLoader.Api
 {
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Assembly, AllowMultiple = true)]
-    public abstract class LibraryAttribute : Attribute
+    public abstract class Library : Attribute
     {
         public string Id { get; }
         public NuGetVersion Version { get; }
 
         /// <param name="id">Library unique id</param>
         /// <param name="version">Library version (semver + 4 digit format)</param>
-        protected LibraryAttribute(string id, string version)
+        protected Library(string id, string version)
         {
             Id = id;
             Version = NuGetVersion.Parse(version);
@@ -29,12 +29,12 @@ namespace SixModLoader.Api
     }
 
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Assembly, AllowMultiple = true)]
-    public class DllLibraryAttribute : LibraryAttribute
+    public class DllLibrary : Library
     {
         public string Url { get; }
 
-        /// <inheritdoc cref="LibraryAttribute"/>
-        public DllLibraryAttribute(string id, string version, string url) : base(id, version)
+        /// <inheritdoc cref="Library"/>
+        public DllLibrary(string id, string version, string url) : base(id, version)
         {
             Url = url;
         }
@@ -55,11 +55,11 @@ namespace SixModLoader.Api
     }
 
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Assembly, AllowMultiple = true)]
-    public class ZipLibraryAttribute : DllLibraryAttribute
+    public class ZipLibrary : DllLibrary
     {
         public string[] Files { get; }
 
-        public ZipLibraryAttribute(string id, string version, string url, string[] files) : base(id, version, url)
+        public ZipLibrary(string id, string version, string url, string[] files) : base(id, version, url)
         {
             Files = files;
         }
@@ -87,13 +87,13 @@ namespace SixModLoader.Api
     }
 
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Assembly, AllowMultiple = true)]
-    public class NuPkgLibraryAttribute : DllLibraryAttribute
+    public class NuPkgLibrary : DllLibrary
     {
         public string Framework { get; }
 
         /// <param name="url">Example: https://www.nuget.org/api/v2/package/LiteDB/5.0.8</param>
         /// <param name="framework">Example: net472</param>
-        public NuPkgLibraryAttribute(string id, string version, string url, string framework) : base(id, version, url)
+        public NuPkgLibrary(string id, string version, string url, string framework) : base(id, version, url)
         {
             Framework = framework;
         }
@@ -136,9 +136,9 @@ namespace SixModLoader.Api
     }
 
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Assembly, AllowMultiple = true)]
-    public class NuGetLibraryAttribute : NuPkgLibraryAttribute
+    public class NuGetLibrary : NuPkgLibrary
     {
-        public NuGetLibraryAttribute(string id, string version, string framework) : base(id, version, $"https://www.nuget.org/api/v2/package/{id}/{version}", framework)
+        public NuGetLibrary(string id, string version, string framework) : base(id, version, $"https://www.nuget.org/api/v2/package/{id}/{version}", framework)
         {
         }
     }
@@ -150,10 +150,10 @@ namespace SixModLoader.Api
             var loader = SixModLoader.Instance;
 
             Logger.Info("Downloading libraries");
-            Download(loader.ModManager.Mods.Select(mod => mod.Type.GetCustomAttributes<LibraryAttribute>().Concat(mod.Assembly.GetCustomAttributes<LibraryAttribute>())).SelectMany(x => x).ToArray());
+            Download(loader.ModManager.Mods.Select(mod => mod.Type.GetCustomAttributes<Library>().Concat(mod.Assembly.GetCustomAttributes<Library>())).SelectMany(x => x).ToArray());
         }
 
-        public void Download(params LibraryAttribute[] libraries)
+        public void Download(params Library[] libraries)
         {
             var librariesPath = Path.Combine(SixModLoader.Instance.DataPath, "libraries");
 

@@ -19,8 +19,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SixModLoader.DevTools", "Si
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SixModLoader.Compatibility.Exiled", "SixModLoader.Compatibility.Exiled\SixModLoader.Compatibility.Exiled.csproj", "{40220CD0-EF5D-45C4-B6B1-60488D4AA5F9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SixModLoader.JumpLoader", "SixModLoader.JumpLoader\SixModLoader.JumpLoader.csproj", "{91A956F9-1D50-4F6C-854A-8A5B38E92AC4}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -47,10 +45,6 @@ Global
 		{40220CD0-EF5D-45C4-B6B1-60488D4AA5F9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{40220CD0-EF5D-45C4-B6B1-60488D4AA5F9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 #		{40220CD0-EF5D-45C4-B6B1-60488D4AA5F9}.Release|Any CPU.Build.0 = Release|Any CPU
-		{91A956F9-1D50-4F6C-854A-8A5B38E92AC4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{91A956F9-1D50-4F6C-854A-8A5B38E92AC4}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{91A956F9-1D50-4F6C-854A-8A5B38E92AC4}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{91A956F9-1D50-4F6C-854A-8A5B38E92AC4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

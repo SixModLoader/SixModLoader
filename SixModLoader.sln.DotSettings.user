@@ -9,4 +9,5 @@
   &lt;Assembly Path="C:\scopophobia\SCPSL_Data\Managed\publicized_assemblies\Assembly-CSharp_publicized.dll" /&gt;&#xD;
   &lt;Assembly Path="D:\Development\CSharp\EXILED\bin\Debug\Exiled.Events.dll" /&gt;&#xD;
   &lt;Assembly Path="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\mscorlib.dll" /&gt;&#xD;
-&lt;/AssemblyExplorer&gt;</s:String></wpf:ResourceDictionary>
+&lt;/AssemblyExplorer&gt;</s:String>
+	</wpf:ResourceDictionary>
