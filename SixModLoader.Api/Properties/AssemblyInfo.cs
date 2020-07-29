@@ -1,12 +1,3 @@
-﻿using System.Runtime.InteropServices;
-using SixModLoader;
-
-// Setting ComVisible to false makes the types in this assembly not visible
-// to COM components.  If you need to access a type in this assembly from
-// COM, set the ComVisible attribute to true on that type.
-[assembly: ComVisible(false)]
-
-// The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("aaa2cf45-fab8-4ee5-9fd5-3b2d12a41d6e")]
+﻿using SixModLoader;
 
 [assembly: Priority(Priority.High)]
