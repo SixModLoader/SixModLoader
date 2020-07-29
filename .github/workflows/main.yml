@@ -96,8 +96,8 @@ jobs:
           cd out
           dotnet pack ../SixModLoader -c Release -o .
           dotnet pack ../SixModLoader.Api -c Release -o .
-          dotnet nuget add source https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json -n ${{ github.repository_owner }} -u ${{ github.repository_owner }} -p ${{ github.token }}
-          dotnet nuget push *.nupkg -s ${{ github.repository_owner }}
+          dotnet nuget update source github --source https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json -u ${{ github.repository_owner }} -p ${{ github.token }}
+          dotnet nuget push *.nupkg -s github
 
       - if: ${{ github.event_name == 'release' }}
         run: 7z a SixModLoader.zip ./out/*
