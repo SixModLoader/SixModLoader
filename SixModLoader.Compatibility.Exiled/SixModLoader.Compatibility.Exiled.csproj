@@ -5,7 +5,7 @@
         <LangVersion>latest</LangVersion>
 
         <Description>Compatibility layer for Exiled</Description>
-        <Version>0.1.0-pre.7</Version>
+        <Version>0.1.0-pre.8</Version>
         <Authors>SixModLoader, Exiled</Authors>
 
         <RepositoryUrl>https://github.com/SixModLoader/SixModLoader</RepositoryUrl>
@@ -21,8 +21,9 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Newtonsoft.Json" Version="12.0.3"/>
+        <PackageReference Include="Octokit" Version="0.48.0"/>
         <PackageReference Include="sharpcompress" Version="0.26.0"/>
+        <PackageReference Include="SixModLoader.Launcher.EasyMetadata" Version="0.1.0"/>
         <PackageReference Include="System.IO.Compression" Version="4.3.0"/>
         <PackageReference Include="System.Net.Http" Version="4.3.4"/>
     </ItemGroup>

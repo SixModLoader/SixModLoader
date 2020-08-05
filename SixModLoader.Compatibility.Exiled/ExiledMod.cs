@@ -2,27 +2,37 @@
 using System.IO;
 using System.Linq;
 using System.Net.Http;
-using System.Net.Http.Headers;
 using System.Reflection;
 using System.Threading.Tasks;
 using Exiled.API.Enums;
 using Exiled.API.Features;
 using HarmonyLib;
 using MEC;
-using Newtonsoft.Json.Linq;
+using NuGet.Versioning;
+using Octokit;
 using SharpCompress.Common;
 using SharpCompress.Readers;
 using SixModLoader.Api;
 using SixModLoader.Api.Events.Server;
 using SixModLoader.Api.Extensions;
 using SixModLoader.Events;
+using SixModLoader.Launcher.EasyMetadata;
 using SixModLoader.Mods;
 
 namespace SixModLoader.Compatibility.Exiled
 {
-    [Mod("SixModLoader.Compatibility.Exiled")]
-    [NuGetLibrary("Newtonsoft.Json", "12.0.3", "net45")]
+    [NuGetLibrary("Octokit", "0.48.0", "net46")]
     [NuGetLibrary("SharpCompress", "0.26.0", "net46")]
+
+    #region EasyMetadata
+
+    [GithubPackageLibrary("SixModLoader.Launcher.EasyMetadata", "0.1.0", "SixModLoader", "net472")]
+    [NuGetLibrary("System.Reflection.Metadata", "1.8.1", "net461")]
+    [NuGetLibrary("System.Collections.Immutable", "1.7.1", "netstandard2.0")]
+
+    #endregion
+
+    [Mod("SixModLoader.Compatibility.Exiled")]
     public class ExiledMod
     {
         public SixModLoader Loader { get; }
@@ -49,32 +59,63 @@ namespace SixModLoader.Compatibility.Exiled
                 var loaderPath = Path.Combine(ModDirectory, "Exiled.Loader.dll");
                 var apiPath = Path.Combine(ModDirectory, "Plugins", "dependencies", "Exiled.API.dll");
 
-                if (!File.Exists(loaderPath) || !File.Exists(apiPath))
+                SemanticVersion version = null;
+
+                if (File.Exists(loaderPath) && File.Exists(apiPath))
                 {
-                    Logger.Info("Downloading Exiled...");
-                    using var httpClient = new HttpClient();
-                    httpClient.DefaultRequestHeaders.UserAgent.Add(new ProductInfoHeaderValue("SixModLoader", SixModLoader.Instance.Version.ToString()));
+                    var assemblyInfo = new AssemblyInfo(loaderPath);
 
-                    var releases = JArray.Parse(await httpClient.GetStringAsync("https://api.github.com/repos/galaxy119/EXILED/releases"));
-                    var downloadUrl = releases.SelectToken(@"$[0].assets[?(@.name == 'Exiled.tar.gz')].browser_download_url")!.ToObject<string>();
-
-                    var reader = ReaderFactory.Open(await httpClient.GetStreamAsync(downloadUrl));
-
-                    var extractionOptions = new ExtractionOptions {Overwrite = true};
-                    while (reader.MoveToNextEntry())
+                    if (SemanticVersion.TryParse(assemblyInfo.Version, out version))
                     {
-                        if (reader.Entry.IsDirectory)
-                            continue;
+                        Logger.Info("Exiled " + version);
+                    }
+                    else
+                    {
+                        Logger.Error("Corrupted Exiled assembly!");
+                    }
+                }
 
-                        var fileName = reader.Entry.Key;
+                var gitHubClient = new GitHubClient(new ProductHeaderValue("SixModLoader", SixModLoader.Instance.Version.ToString()));
 
-                        if (FilesToDownload.Contains(fileName) || fileName.StartsWith("EXILED/Plugins/dependencies/"))
+                var rateLimit = await gitHubClient.Miscellaneous.GetRateLimits();
+                if (rateLimit.Resources.Core.Remaining <= 0)
+                {
+                    Logger.Warn($"GitHub API rate limit reached, skipping auto update. (try again in {rateLimit.Resources.Core.Reset})");
+                }
+                else
+                {
+                    var releases = await gitHubClient.Repository.Release.GetAll("galaxy119", "EXILED");
+
+                    var newerRelease = releases
+                        // .Where(x => version == null || x.Prerelease == version?.IsPrerelease) TODO wait for exiled to stop abusing semver
+                        .Select(x => (Release: x, Version: SemanticVersion.TryParse(x.TagName, out var v) ? v : null))
+                        .Where(x => x.Version != null)
+                        .OrderByDescending(x => x.Version)
+                        .FirstOrDefault(x => x.Version.CompareTo(version) > 0);
+
+                    if (newerRelease != default)
+                    {
+                        Logger.Info("Updating Exiled to version: " + newerRelease.Version);
+                        using var httpClient = new HttpClient();
+
+                        var reader = ReaderFactory.Open(await httpClient.GetStreamAsync(newerRelease.Release.Assets.Single(x => x.Name == "Exiled.tar.gz").BrowserDownloadUrl));
+
+                        var extractionOptions = new ExtractionOptions {Overwrite = true};
+                        while (reader.MoveToNextEntry())
                         {
-                            var path = Path.GetFullPath(ModDirectory) + fileName.Substring(fileName.IndexOf("/", StringComparison.Ordinal));
+                            if (reader.Entry.IsDirectory)
+                                continue;
 
-                            Directory.GetParent(path).Create();
-                            reader.WriteEntryToFile(path, extractionOptions);
-                            Logger.Info("Downloaded " + fileName);
+                            var fileName = reader.Entry.Key;
+
+                            if (FilesToDownload.Contains(fileName) || fileName.StartsWith("EXILED/Plugins/dependencies/"))
+                            {
+                                var path = Path.GetFullPath(ModDirectory) + fileName.Substring(fileName.IndexOf("/", StringComparison.Ordinal));
+
+                                Directory.GetParent(path).Create();
+                                reader.WriteEntryToFile(path, extractionOptions);
+                                Logger.Info("Downloaded " + fileName);
+                            }
                         }
                     }
                 }
@@ -116,7 +157,7 @@ namespace SixModLoader.Compatibility.Exiled
             Harmony.Patch(AccessTools.Method(typeof(Paths), nameof(Paths.Reload)), new HarmonyMethod(typeof(ExiledMod), nameof(PathsPatch)));
             Paths.Reload();
 
-            File.Open(Paths.Config, FileMode.OpenOrCreate, FileAccess.Read).Dispose();
+            File.Open(Paths.Config, System.IO.FileMode.OpenOrCreate, FileAccess.Read).Dispose();
             Timing.CallDelayed(0.25f, () =>
             {
                 global::Exiled.Loader.Loader.Config.Environment = EnvironmentType.Production;

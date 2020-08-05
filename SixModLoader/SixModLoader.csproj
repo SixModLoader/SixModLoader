@@ -1,26 +1,26 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <TargetFramework>net472</TargetFramework>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <LangVersion>latest</LangVersion>
+    <PropertyGroup>
+        <TargetFramework>net472</TargetFramework>
+        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+        <LangVersion>latest</LangVersion>
 
-    <Description>Experimental modern SCP:SL mod loader</Description>
-    <Version>0.1.0-pre.7</Version>
-    <Authors>SixModLoader</Authors>
+        <Description>Experimental modern SCP:SL mod loader</Description>
+        <Version>0.1.0-pre.8</Version>
+        <Authors>SixModLoader</Authors>
 
-    <RepositoryUrl>https://github.com/SixModLoader/SixModLoader</RepositoryUrl>
-    <RepositoryType>git</RepositoryType>
-    <PackageProjectUrl>https://sixmodloader.github.io/</PackageProjectUrl>
-    <PackageTags>SixModLoader SCPSL</PackageTags>
-    <PackageLicenseExpression>MIT</PackageLicenseExpression>
-  </PropertyGroup>
-  
-  <Import Project="$(ProjectDir)..\SCPSL.props" />
-  <Target Name="Copy" AfterTargets="Build">
-    <ItemGroup>
-      <OutputFiles Include="$(OutputPath)*.dll" />
-    </ItemGroup>
-    <Copy SourceFiles="@(OutputFiles)" DestinationFolder="$(SCPSL_SERVER)\SixModLoader\bin\" Condition="'$(Configuration)' == 'Debug'" />
-    <Copy SourceFiles="@(OutputFiles)" DestinationFolder="$(ProjectDir)..\out\bin\" Condition="'$(Configuration)' == 'Release'" />
-  </Target>
+        <RepositoryUrl>https://github.com/SixModLoader/SixModLoader</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
+        <PackageProjectUrl>https://sixmodloader.github.io/</PackageProjectUrl>
+        <PackageTags>SixModLoader SCPSL</PackageTags>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    </PropertyGroup>
+
+    <Import Project="$(ProjectDir)..\SCPSL.props"/>
+    <Target Name="Copy" AfterTargets="Build">
+        <ItemGroup>
+            <OutputFiles Include="$(OutputPath)*.dll"/>
+        </ItemGroup>
+        <Copy SourceFiles="@(OutputFiles)" DestinationFolder="$(SCPSL_SERVER)\SixModLoader\bin\" Condition="'$(Configuration)' == 'Debug'"/>
+        <Copy SourceFiles="@(OutputFiles)" DestinationFolder="$(ProjectDir)..\out\bin\" Condition="'$(Configuration)' == 'Release'"/>
+    </Target>
 </Project>

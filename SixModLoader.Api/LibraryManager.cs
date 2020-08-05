@@ -142,6 +142,14 @@ namespace SixModLoader.Api
         {
         }
     }
+    
+    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Assembly, AllowMultiple = true)]
+    public class GithubPackageLibrary : NuPkgLibrary
+    {
+        public GithubPackageLibrary(string id, string version, string owner, string framework) : base(id, version, $"https://nuget.pkg.github.com/{owner}/download/{id}/{version}/{id}-{version}.nupkg", framework)
+        {
+        }
+    }
 
     public class LibraryManager
     {
