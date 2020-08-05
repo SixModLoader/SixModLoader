@@ -31,7 +31,7 @@ jobs:
         with:
           source-url: https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json
         env:
-          NUGET_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}  
+          NUGET_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
 
       - name: Download DepotDownloader
         uses: carlosperate/download-file-action@v1.0.3
@@ -94,11 +94,30 @@ jobs:
           external_repository: SixModLoader/sixmodloader.github.io
           publish_branch: master
 
-      - name: Upload a Build Artifact
+      - name: Upload main artifact
         uses: actions/upload-artifact@v2
         with:
+          name: SixModLoader.zip
           path: out/
 
+      - name: Upload ExampleMod
+        uses: actions/upload-artifact@v2
+        with:
+          name: ExampleMod
+          path: SixModLoader.ExampleMod/bin/Release/net472/SixModLoader.ExampleMod.dll
+          
+      - name: Upload DevTools
+        uses: actions/upload-artifact@v2
+        with:
+          name: DevTools
+          path: SixModLoader.DevTools/bin/Release/net472/SixModLoader.DevTools.dll        
+          
+      - name: Upload SixModLoader.Compatibility.Exiled
+        uses: actions/upload-artifact@v2
+        with:
+          name: SixModLoader.Compatibility.Exiled
+          path: SixModLoader.Compatibility.Exiled/bin/Release/net472/SixModLoader.Compatibility.Exiled.dll
+          
       - if: ${{ github.event_name == 'release' }}
         run: 7z a SixModLoader.zip ./out/*
 
@@ -112,7 +131,7 @@ jobs:
           upload_url: ${{ github.event.release.upload_url }}
           asset_path: ./SixModLoader.zip
           asset_name: SixModLoader.zip
-          asset_content_type: application/zip  
+          asset_content_type: application/zip
 
       - name: Push NuGet package
         if: ${{ github.event_name == 'release' }}
