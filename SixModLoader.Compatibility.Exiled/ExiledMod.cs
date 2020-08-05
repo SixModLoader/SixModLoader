@@ -4,10 +4,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Reflection;
 using System.Threading.Tasks;
-using Exiled.API.Enums;
-using Exiled.API.Features;
 using HarmonyLib;
-using MEC;
 using NuGet.Versioning;
 using Octokit;
 using SharpCompress.Common;
@@ -129,51 +126,13 @@ namespace SixModLoader.Compatibility.Exiled
             }).Wait();
         }
 
-        public static bool PathsPatch()
-        {
-            Logger.Info("Overwrote Exiled paths");
-            Paths.Exiled = SixModLoader.Instance.ModManager.GetMod<ExiledMod>().Instance.ModDirectory;
-            Paths.Plugins = Path.Combine(Paths.Exiled, "Plugins");
-            Paths.Configs = Paths.Exiled;
-            Paths.Config = Path.Combine(Paths.Exiled, "config.yml");
-            Paths.Log = Path.Combine(Paths.Exiled, "ra.log.txt");
-            Paths.Dependencies = Path.Combine(Paths.Plugins, "dependencies");
-            return false;
-        }
-
-        public static void ModsCommandPatch(ref string response)
-        {
-            var plugins = global::Exiled.Loader.Loader.Plugins;
-            response += $"\nExiled plugins ({plugins.Count}): " + string.Join(", ", plugins.Select(mod => mod.Name));
-        }
-
         [EventHandler(typeof(ServerConsoleReadyEvent))]
         public void OnServerConsoleReady()
         {
             if (!Loaded)
                 return;
 
-            Logger.Info("Loading Exiled plugins");
-            Harmony.Patch(AccessTools.Method(typeof(Paths), nameof(Paths.Reload)), new HarmonyMethod(typeof(ExiledMod), nameof(PathsPatch)));
-            Paths.Reload();
-
-            File.Open(Paths.Config, System.IO.FileMode.OpenOrCreate, FileAccess.Read).Dispose();
-            Timing.CallDelayed(0.25f, () =>
-            {
-                global::Exiled.Loader.Loader.Config.Environment = EnvironmentType.Production;
-                global::Exiled.Loader.Loader.Run();
-
-                try
-                {
-                    EventManager.Instance.Register(new EventsCompatibility());
-                }
-                catch (Exception e) when (e is InvalidOperationException || e is TypeLoadException || e is FileNotFoundException)
-                {
-                    Logger.Warn("Exiled Events plugin not found!");
-                }
-
-                Harmony.Patch(AccessTools.Method(typeof(SixModLoaderCommand.ModsCommand), nameof(SixModLoaderCommand.ModsCommand.Execute)), postfix: new HarmonyMethod(typeof(ExiledMod), nameof(ModsCommandPatch)));
-            });
+            ExiledLoader.Load(Harmony);
         }
     }
 }

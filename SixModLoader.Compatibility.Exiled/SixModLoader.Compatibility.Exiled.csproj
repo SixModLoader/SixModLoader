@@ -16,36 +16,24 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\SixModLoader.Api\SixModLoader.Api.csproj"/>
-        <ProjectReference Include="..\SixModLoader\SixModLoader.csproj"/>
+        <ProjectReference Include="..\SixModLoader.Api\SixModLoader.Api.csproj" />
+        <ProjectReference Include="..\SixModLoader\SixModLoader.csproj" />
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Octokit" Version="0.48.0"/>
-        <PackageReference Include="sharpcompress" Version="0.26.0"/>
-        <PackageReference Include="SixModLoader.Launcher.EasyMetadata" Version="0.1.0"/>
-        <PackageReference Include="System.IO.Compression" Version="4.3.0"/>
-        <PackageReference Include="System.Net.Http" Version="4.3.4"/>
+        <PackageReference Include="EXILED" Version="2.*" />
+        <PackageReference Include="Octokit" Version="0.48.0" />
+        <PackageReference Include="sharpcompress" Version="0.26.0" />
+        <PackageReference Include="SixModLoader.Launcher.EasyMetadata" Version="0.1.0" />
+        <PackageReference Include="System.IO.Compression" Version="4.3.0" />
+        <PackageReference Include="System.Net.Http" Version="4.3.4" />
     </ItemGroup>
 
-    <Import Project="$(ProjectDir)..\SCPSL.props"/>
+    <Import Project="$(ProjectDir)..\SCPSL.props" />
     <Target Name="Copy" AfterTargets="Build">
         <ItemGroup>
-            <OutputFiles Include="$(OutputPath)$(AssemblyName).dll"/>
+            <OutputFiles Include="$(OutputPath)$(AssemblyName).dll" />
         </ItemGroup>
-        <Copy SourceFiles="@(OutputFiles)" DestinationFolder="$(SCPSL_SERVER)\SixModLoader\mods\" Condition="'$(Configuration)' == 'Debug'"/>
+        <Copy SourceFiles="@(OutputFiles)" DestinationFolder="$(SCPSL_SERVER)\SixModLoader\mods\" Condition="'$(Configuration)' == 'Debug'" />
     </Target>
-
-    <ItemGroup>
-        <!-- Exiled -->
-        <Reference Include="Exiled.API">
-            <HintPath>..\..\EXILED\bin\Debug\Exiled.API.dll</HintPath>
-        </Reference>
-        <Reference Include="Exiled.Events">
-            <HintPath>..\..\EXILED\bin\Debug\Exiled.Events.dll</HintPath>
-        </Reference>
-        <Reference Include="Exiled.Loader">
-            <HintPath>..\..\EXILED\bin\Debug\Exiled.Loader.dll</HintPath>
-        </Reference>
-    </ItemGroup>
 </Project>
