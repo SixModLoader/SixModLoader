@@ -105,19 +105,19 @@ jobs:
         with:
           name: ExampleMod
           path: SixModLoader.ExampleMod/bin/Release/net472/SixModLoader.ExampleMod.dll
-          
+
       - name: Upload DevTools
         uses: actions/upload-artifact@v2
         with:
           name: DevTools
-          path: SixModLoader.DevTools/bin/Release/net472/SixModLoader.DevTools.dll        
-          
+          path: SixModLoader.DevTools/bin/Release/net472/SixModLoader.DevTools.dll
+
       - name: Upload SixModLoader.Compatibility.Exiled
         uses: actions/upload-artifact@v2
         with:
           name: SixModLoader.Compatibility.Exiled
           path: SixModLoader.Compatibility.Exiled/bin/Release/net472/SixModLoader.Compatibility.Exiled.dll
-          
+
       - if: ${{ github.event_name == 'release' }}
         run: 7z a SixModLoader.zip ./out/*
 
@@ -137,6 +137,7 @@ jobs:
         if: ${{ github.event_name == 'release' }}
         run: |
           cd out
+          dotnet tool install --global gpr
           dotnet pack ../SixModLoader -c Release -o .
           dotnet pack ../SixModLoader.Api -c Release -o .
-          dotnet nuget push *.nupkg
+          gpr push *.nupkg
