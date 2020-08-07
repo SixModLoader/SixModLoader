@@ -20,7 +20,7 @@ namespace SixModLoader.Api.Extensions
             Type = type;
         }
     }
-    
+
     public static class CommandExtensions
     {
         public static bool CheckPermission(this ICommandSender sender, string permission)
@@ -30,9 +30,10 @@ namespace SixModLoader.Api.Extensions
                 var player = ReferenceHub.GetHub(playerSender.Processor.gameObject);
                 return player.CheckPermission(permission);
             }
+
             return true;
         }
-        
+
         public static bool CheckPermission(this ReferenceHub player, string permission)
         {
             return player.gameObject == PlayerManager.localPlayer; // || TODO permissions
@@ -42,7 +43,7 @@ namespace SixModLoader.Api.Extensions
         {
             if (text == null)
                 return null;
-            
+
             var players = new List<ReferenceHub>();
 
             foreach (var s in text.Split('.', ';'))
@@ -59,6 +60,7 @@ namespace SixModLoader.Api.Extensions
                                 continue;
                             }
                         }
+
                         break;
                     case "*":
                         players.AddRange(ReferenceHub.Hubs.Values);

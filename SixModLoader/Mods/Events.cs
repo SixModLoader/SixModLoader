@@ -17,8 +17,16 @@ namespace SixModLoader.Mods
                 .ToList());
         }
     }
-    
-    public class ModEnableEvent : ModEvent { }
-    public class ModDisableEvent : ModEvent { }
-    public class ModReloadEvent : ModEvent { }
+
+    public class ModEnableEvent : ModEvent
+    {
+    }
+
+    public class ModDisableEvent : ModEvent
+    {
+    }
+
+    public class ModReloadEvent : ModEvent
+    {
+    }
 }

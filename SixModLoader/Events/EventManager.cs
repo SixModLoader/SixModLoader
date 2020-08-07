@@ -89,7 +89,7 @@ namespace SixModLoader.Events
                 Logger.Debug($"Registered {attribute.EventType} handler {methodInfo.Name}");
             }
         }
-        
+
         public void Unregister(object obj)
         {
             Unregister(obj.GetType(), obj);

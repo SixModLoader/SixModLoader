@@ -142,7 +142,7 @@ namespace SixModLoader.Api
         {
         }
     }
-    
+
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Assembly, AllowMultiple = true)]
     public class GithubPackageLibrary : NuPkgLibrary
     {

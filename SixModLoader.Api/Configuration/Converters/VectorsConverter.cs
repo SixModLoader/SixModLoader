@@ -73,7 +73,7 @@ namespace SixModLoader.Api.Configuration.Converters
             }
 
             eventEmitter.Emit(new SequenceStartEventInfo(new ObjectDescriptor(axes, axes.GetType(), axes.GetType())) {Style = SequenceStyle.Flow}, emitter);
-            
+
             foreach (var axis in axes)
             {
                 eventEmitter.Emit(new ScalarEventInfo(new ObjectDescriptor(axis, typeof(float), typeof(float))), emitter);

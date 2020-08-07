@@ -20,7 +20,7 @@ namespace SixModLoader.DevTools
     {
         [AutoHarmony]
         public Harmony Harmony { get; set; }
-        
+
         [EventHandler]
         private void OnPlayerJoined(PlayerJoinedEvent ev)
         {
@@ -32,7 +32,7 @@ namespace SixModLoader.DevTools
 
             if (ev.Player.isLocalPlayer)
                 return;
-            
+
             Timing.CallDelayed(1, () => ev.Player.characterClassManager.SetPlayersClass(ev.Player.characterClassManager.ForceClass, ev.Player.gameObject));
         }
     }

@@ -31,7 +31,7 @@ namespace SixModLoader.Api.Extensions
         {
             return inventory.items.Cast<Inventory.SyncItemInfo?>().FirstOrDefault(x => x != null && x.Value.uniq == uniq) ?? new Inventory.SyncItemInfo {id = ItemType.None};
         }
-        
+
         public static void OverridePosition(this PlayerMovementSync playerMovementSync, Vector3 position, float rotation = 0, bool forceGround = false)
         {
             playerMovementSync.OverridePosition(position, rotation, forceGround);

@@ -59,7 +59,7 @@ namespace SixModLoader.Api.Extensions
         {
             return text.Color(player.characterClassManager.CurRole.classColor);
         }
-        
+
         /// <summary>
         /// Changes vertical offset of <paramref name="text"/>
         /// </summary>
@@ -70,7 +70,7 @@ namespace SixModLoader.Api.Extensions
         {
             return text.Tag("voffset", value);
         }
-        
+
         /// <summary>
         /// Changes vertical offset of <paramref name="text"/>
         /// </summary>

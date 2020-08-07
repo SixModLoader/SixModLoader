@@ -105,7 +105,7 @@ namespace SixModLoader.Api
             public string Description => "Reload configs";
         }
 
-        public override void LoadGeneratedCommands()
+        public sealed override void LoadGeneratedCommands()
         {
             RegisterCommand(DefaultCommand = new VersionCommand());
             RegisterCommand(new ModsCommand());

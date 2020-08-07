@@ -37,7 +37,7 @@ namespace SixModLoader.Api.Events.Player.Inventory
                 var codeInstructions = instructions.ToList();
 
                 var index = codeInstructions
-                    .FindIndex(x => x.opcode == OpCodes.Call && (MethodInfo)x.operand == m_SetPickup) - 20;
+                    .FindIndex(x => x.Calls(m_SetPickup)) - 20;
 
                 var label = iLGenerator.DefineLabel();
                 codeInstructions.Last().labels.Add(label);

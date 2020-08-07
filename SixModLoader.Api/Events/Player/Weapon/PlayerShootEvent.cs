@@ -13,7 +13,7 @@ namespace SixModLoader.Api.Events.Player.Weapon
         public bool Cancelled { get; set; }
         public Vector3 TargetPos { get; set; }
         public GameObject Target { get; set; }
-        
+
         [HarmonyPatch(typeof(WeaponManager), nameof(WeaponManager.CallCmdShoot))]
         public class Patch
         {
@@ -32,14 +32,14 @@ namespace SixModLoader.Api.Events.Player.Weapon
 
             private static readonly MethodInfo m_Invoke = AccessTools.Method(typeof(Patch), nameof(Invoke));
             private static readonly MethodInfo m_ModifyDuration = AccessTools.Method(typeof(global::Inventory.SyncListItemInfo), nameof(global::Inventory.SyncListItemInfo.ModifyDuration));
-            
+
             public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator iLGenerator)
             {
                 var codeInstructions = instructions.ToList();
 
                 var index = codeInstructions
-                    .FindIndex(x => x.opcode == OpCodes.Callvirt && (MethodInfo) x.operand == m_ModifyDuration) - 13;
-                
+                    .FindIndex(x => x.Calls(m_ModifyDuration)) - 13;
+
                 var label = iLGenerator.DefineLabel();
                 codeInstructions.Last().labels.Add(label);
 

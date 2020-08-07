@@ -36,7 +36,7 @@ namespace SixModLoader.Api.Events.Player.Weapon
                 var codeInstructions = instructions.ToList();
 
                 var index = codeInstructions
-                    .FindIndex(x => x.opcode == OpCodes.Callvirt && (MethodInfo)x.operand == m_ServerDisable) + 1;
+                    .FindIndex(x => x.Calls(m_ServerDisable)) + 1;
 
                 var label = iLGenerator.DefineLabel();
                 codeInstructions.Last().labels.Add(label);

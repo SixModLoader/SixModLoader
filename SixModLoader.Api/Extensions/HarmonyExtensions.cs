@@ -16,7 +16,7 @@ namespace SixModLoader.Api.Extensions
         {
             harmony.UnpatchAll(harmony.Id);
         }
-        
+
         public static void Initialize()
         {
             SixModLoader.Instance.Harmony
@@ -46,7 +46,7 @@ namespace SixModLoader.Api.Extensions
                                 harmony = new Harmony(mod.Info.Id);
                                 property.SetValue(mod.AbstractInstance, harmony);
                             }
-                            
+
                             Logger.Info($"[{mod.Info.Name}] Patching Harmony");
                             harmony.PatchAll(mod.Assembly);
                         }

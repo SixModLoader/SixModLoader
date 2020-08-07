@@ -12,21 +12,21 @@ namespace SixModLoader.Api.Configuration
         {
             private int valuePeriod;
             private int currentIndex;
-        
+
             public EmitterState(int valuePeriod)
             {
                 this.valuePeriod = valuePeriod;
             }
-        
+
             public bool VisitNext()
             {
                 ++currentIndex;
                 return (currentIndex % valuePeriod) == 0;
             }
         }
-    
+
         private readonly Stack<EmitterState> state = new Stack<EmitterState>();
-    
+
         public ForceQuotedStringValuesEventEmitter(IEventEmitter nextEmitter)
             : base(nextEmitter)
         {
@@ -37,12 +37,12 @@ namespace SixModLoader.Api.Configuration
         {
             if (this.state.Peek().VisitNext())
             {
-                if(eventInfo.Source.Type == typeof(string))
+                if (eventInfo.Source.Type == typeof(string))
                 {
                     eventInfo.Style = ScalarStyle.DoubleQuoted;
                 }
             }
-            
+
             base.Emit(eventInfo, emitter);
         }
 

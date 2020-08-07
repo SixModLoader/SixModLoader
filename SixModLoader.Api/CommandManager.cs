@@ -44,7 +44,7 @@ namespace SixModLoader.Api
                 }
             }
         }
-        
+
         public void UnregisterCommands(ModContainer mod)
         {
             foreach (var commandType in mod.Assembly.GetTypes().Where(x => typeof(ICommand).IsAssignableFrom(x)))
@@ -52,12 +52,12 @@ namespace SixModLoader.Api
                 UnregisterCommand(commandType);
             }
         }
-        
+
         public void UnregisterCommand<T>() where T : ICommand
         {
             UnregisterCommand(typeof(T));
         }
-        
+
         public void UnregisterCommand(Type commandType)
         {
             foreach (var attribute in commandType.GetCustomAttributes<AutoCommandHandlerAttribute>())
@@ -69,7 +69,7 @@ namespace SixModLoader.Api
                     continue;
                 }
 
-                foreach (var command in commandHandler.AllCommands.Where(x=>x.GetType() == commandType).ToList())
+                foreach (var command in commandHandler.AllCommands.Where(x => x.GetType() == commandType).ToList())
                 {
                     Logger.Debug($"Unregistering {command} from {attribute.Type}");
                     commandHandler.UnregisterCommand(command);

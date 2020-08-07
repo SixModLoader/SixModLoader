@@ -19,7 +19,7 @@ namespace SixModLoader.Api.Events.Player.Inventory
                     Player = __instance.Hub,
                     Pickup = __instance.TargetPickup
                 };
-                
+
                 EventManager.Instance.Broadcast(@event);
 
                 return !@event.Cancelled;

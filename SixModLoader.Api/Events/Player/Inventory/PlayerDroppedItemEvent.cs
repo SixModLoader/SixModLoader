@@ -40,7 +40,7 @@ namespace SixModLoader.Api.Events.Player.Inventory
                     var codeInstructions = instructions.ToList();
 
                     var index = codeInstructions
-                        .FindIndex(x => x.opcode == OpCodes.Call && (MethodInfo) x.operand == m_SetPickup) + 1;
+                        .FindIndex(x => x.Calls(m_SetPickup)) + 1;
 
                     var pickupIndex = iLGenerator.DeclareLocal(typeof(Pickup)).LocalIndex;
                     codeInstructions.RemoveAt(index); // remove pop
@@ -68,7 +68,7 @@ namespace SixModLoader.Api.Events.Player.Inventory
                 {
                     var codeInstructions = instructions.ToList();
 
-                    var index_id = codeInstructions.FindIndex(instruction => instruction.opcode == OpCodes.Ldfld && (FieldInfo) instruction.operand == f_id);
+                    var index_id = codeInstructions.FindIndex(instruction => instruction.LoadsField(f_id));
 
                     codeInstructions.InsertRange(index_id - 2, new[]
                     {
@@ -76,7 +76,7 @@ namespace SixModLoader.Api.Events.Player.Inventory
                         new CodeInstruction(OpCodes.Ldloc_1) // load item
                     });
 
-                    var index_SetPickup = codeInstructions.FindIndex(instruction => instruction.opcode == OpCodes.Call && (MethodInfo) instruction.operand == m_SetPickup);
+                    var index_SetPickup = codeInstructions.FindIndex(instruction => instruction.Calls(m_SetPickup));
 
                     codeInstructions.RemoveAt(index_SetPickup + 1);
                     codeInstructions.InsertRange(index_SetPickup + 1, new[]

@@ -11,22 +11,22 @@ namespace SixModLoader.ExampleMod
     {
         public string X { get; set; } = "Hello!";
     }
-    
+
     [Mod("SixModLoader.ExampleMod")]
     public class ExampleMod
     {
         [Inject]
         public ModContainer ModContainer { get; set; }
-        
+
         [EventHandler(typeof(ModEnableEvent))]
         public void OnEnable()
         {
             Logger.Info($"{ModContainer.Info.Name} {ModContainer.Info.Version} loaded!");
         }
-        
+
         [AutoConfiguration(ConfigurationType.Configuration)]
         public Configuration Configuration { get; set; }
-        
+
         [EventHandler(typeof(ModReloadEvent))]
         public void OnReload()
         {
@@ -48,7 +48,7 @@ namespace SixModLoader.ExampleMod
         }
 
         public string Command => "example";
-        public string[] Aliases => new[] { "ex" };
+        public string[] Aliases => new[] {"ex"};
         public string Description => "Example command!";
     }
 }

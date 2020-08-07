@@ -15,7 +15,7 @@ namespace SixModLoader.Mods
         public string[] Authors { get; private set; }
 
         public IdentifiedLogger Logger { get; private set; }
-        
+
         public override string ToString()
         {
             return $"{Name} ({Version})";
@@ -47,7 +47,7 @@ namespace SixModLoader.Mods
             if (Auto)
             {
                 Auto = false;
-                
+
                 var assembly = type.Assembly;
                 var assemblyName = assembly.GetName();
 

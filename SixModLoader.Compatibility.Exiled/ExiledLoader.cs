@@ -29,7 +29,7 @@ namespace SixModLoader.Compatibility.Exiled
             var plugins = global::Exiled.Loader.Loader.Plugins;
             response += $"\nExiled plugins ({plugins.Count}): " + string.Join(", ", plugins.Select(mod => mod.Name));
         }
-        
+
         public static void Load(Harmony harmony)
         {
             Logger.Info("Loading Exiled plugins");

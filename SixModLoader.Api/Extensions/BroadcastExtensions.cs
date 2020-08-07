@@ -55,18 +55,8 @@ namespace SixModLoader.Api.Extensions
     /// </summary>
     public static class BroadcastExtensions
     {
-        private static Broadcast _broadcast;
-
-        internal static Broadcast Broadcast
-        {
-            get
-            {
-                if (_broadcast == null)
-                    _broadcast = PlayerManager.localPlayer.GetComponent<Broadcast>();
-
-                return _broadcast;
-            }
-        }
+        private static readonly Lazy<Broadcast> _broadcast = new Lazy<Broadcast>(() => PlayerManager.localPlayer.GetComponent<Broadcast>());
+        internal static Broadcast BroadcastComponent => _broadcast.Value;
 
         internal static bool DisablePatches;
         public const uint MaxBroadcastTime = 300;
@@ -107,6 +97,26 @@ namespace SixModLoader.Api.Extensions
             }
         }
 
+        public static void Broadcast(this ReferenceHub player, string data, ushort time, Broadcast.BroadcastFlags flags = global::Broadcast.BroadcastFlags.Normal)
+        {
+            BroadcastComponent.TargetAddElement(player.networkIdentity.connectionToClient, data, time, flags);
+        }
+
+        public static void ClearBroadcasts(this ReferenceHub player)
+        {
+            BroadcastComponent.TargetClearElements(player.networkIdentity.connectionToClient);
+        }
+
+        public static void Broadcast(string data, ushort time, Broadcast.BroadcastFlags flags = global::Broadcast.BroadcastFlags.Normal)
+        {
+            BroadcastComponent.CallRpcAddElement(data, time, flags);
+        }
+
+        public static void ClearBroadcasts()
+        {
+            BroadcastComponent.RpcClearElements();
+        }
+
         internal static void Update(NetworkConnection connection)
         {
             if (!connection.isReady)
@@ -140,10 +150,10 @@ namespace SixModLoader.Api.Extensions
 
             InvokeOriginal(() =>
             {
-                Broadcast.TargetClearElements(connection);
+                BroadcastComponent.TargetClearElements(connection);
                 if (!string.IsNullOrEmpty(data))
                 {
-                    Broadcast.TargetAddElement(connection, data, (ushort) Mathf.CeilToInt(message.Time), message.Flags);
+                    BroadcastComponent.TargetAddElement(connection, data, (ushort) Mathf.CeilToInt(message.Time), message.Flags);
                 }
             });
 

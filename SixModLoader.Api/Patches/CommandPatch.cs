@@ -42,7 +42,7 @@ namespace SixModLoader.Api.Patches
                             : codeInstructions[i].opcode == OpCodes.Ldloc_0) &&
                         codeInstructions[i + 1].opcode == OpCodes.Ldc_I4_0 &&
                         codeInstructions[i + 2].opcode == OpCodes.Ldelem_Ref &&
-                        codeInstructions[i + 3].opcode == OpCodes.Callvirt && (MethodInfo) codeInstructions[i + 3].operand == m_ToUpper &&
+                        codeInstructions[i + 3].Calls(m_ToUpper) &&
                         codeInstructions[i + 4].opcode == OpCodes.Ldstr && ((string) codeInstructions[i + 4].operand).StartsWith("#")
                     )
                     {
