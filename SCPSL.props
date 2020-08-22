@@ -2,7 +2,7 @@
 <Project>
     <ItemGroup>
         <!-- Game -->
-        <Reference Include="Assembly-CSharp_publicized">
+        <Reference Include="Assembly-CSharp">
             <HintPath>$(SCPSL_SERVER)\SCPSL_Data\Managed\publicized_assemblies\Assembly-CSharp_publicized.dll</HintPath>
             <Private>False</Private>
         </Reference>
@@ -16,8 +16,8 @@
         </Reference>
 
         <!-- Game dependencies -->
-        <Reference Include="Mirror_publicized">
-            <HintPath>$(SCPSL_SERVER)\SCPSL_Data\Managed\publicized_assemblies\Mirror_publicized.dll</HintPath>
+        <Reference Include="Mirror">
+            <HintPath>$(SCPSL_SERVER)\SCPSL_Data\Managed/publicized_assemblies\Mirror_publicized.dll</HintPath>
             <Private>False</Private>
         </Reference>
 

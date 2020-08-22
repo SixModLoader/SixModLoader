@@ -37,9 +37,16 @@ namespace SixModLoader.Api.Configuration
         {
             if (this.state.Peek().VisitNext())
             {
-                if (eventInfo.Source.Type == typeof(string))
+                var text = eventInfo.Source.Value as string;
+                if (eventInfo.Source.Type == typeof(string) && eventInfo.Source.StaticType == typeof(string))
                 {
-                    eventInfo.Style = ScalarStyle.DoubleQuoted;
+                    if (string.IsNullOrEmpty(text))
+                    {
+                        base.Emit(new ScalarEventInfo(new ObjectDescriptor("null", eventInfo.Source.Type, eventInfo.Source.StaticType)), emitter);
+                        return;
+                    }
+
+                    eventInfo.Style = text.Length > 1 ? ScalarStyle.DoubleQuoted : ScalarStyle.SingleQuoted;
                 }
             }
 

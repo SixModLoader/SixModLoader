@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using HarmonyLib;
@@ -43,15 +44,24 @@ namespace SixModLoader.Api.Configuration
 
     public class ConfigurationManager
     {
-        private static EventYamlTypeConverter[] Converters { get; } =
+        public static List<EventYamlTypeConverter> Converters { get; } = new List<EventYamlTypeConverter>
         {
             new VectorsConverter()
         };
 
-        public static IDeserializer Deserializer { get; }
-        public static ISerializer Serializer { get; }
+        public static Dictionary<string, Type> TagMappings { get; } = new Dictionary<string, Type>();
 
-        static ConfigurationManager()
+        public static void RegisterTagMapping(Type type)
+        {
+            TagMappings["!" + type.Name] = type;
+        }
+
+        public static void RegisterTagMapping<T>()
+        {
+            RegisterTagMapping(typeof(T));
+        }
+
+        private static readonly Lazy<IDeserializer> _deserializer = new Lazy<IDeserializer>(() =>
         {
             var deserializerBuilder = new DeserializerBuilder()
                 .WithNamingConvention(HyphenatedNamingConvention.Instance)
@@ -62,8 +72,20 @@ namespace SixModLoader.Api.Configuration
                 deserializerBuilder.WithTypeConverter(converter);
             }
 
-            Deserializer = deserializerBuilder.Build();
+            foreach (var tagMapping in TagMappings)
+            {
+                deserializerBuilder.WithTagMapping(tagMapping.Key, tagMapping.Value);
+            }
 
+            SixModLoader.Instance.EventManager.Broadcast(new YamlDeserializerBuildEvent(deserializerBuilder));
+
+            return deserializerBuilder.Build();
+        });
+
+        public static IDeserializer Deserializer => _deserializer.Value;
+
+        private static readonly Lazy<ISerializer> _serializer = new Lazy<ISerializer>(() =>
+        {
             // https://github.com/aaubry/YamlDotNet/issues/473#issuecomment-595954595
             IEventEmitter eventEmitter = null;
 
@@ -79,8 +101,17 @@ namespace SixModLoader.Api.Configuration
                 serializerBuilder.WithTypeConverter(converter);
             }
 
-            Serializer = serializerBuilder.Build();
-        }
+            foreach (var tagMapping in TagMappings)
+            {
+                serializerBuilder.WithTagMapping(tagMapping.Key, tagMapping.Value);
+            }
+
+            SixModLoader.Instance.EventManager.Broadcast(new YamlSerializerBuildEvent(serializerBuilder));
+
+            return serializerBuilder.Build();
+        });
+
+        public static ISerializer Serializer => _serializer.Value;
 
         public static void Initialize()
         {
@@ -100,17 +131,29 @@ namespace SixModLoader.Api.Configuration
             Directory.GetParent(file).Create();
             var exists = File.Exists(file);
 
-            using (var fileStream = new FileStream(file, FileMode.OpenOrCreate, FileAccess.Read, FileShare.ReadWrite))
+            try
             {
-                if (exists)
+                using (var fileStream = new FileStream(file, FileMode.OpenOrCreate, FileAccess.Read, FileShare.ReadWrite))
                 {
-                    obj = Deserializer.Deserialize(new StreamReader(fileStream), type) ?? obj;
+                    if (exists)
+                    {
+                        obj = Deserializer.Deserialize(new StreamReader(fileStream), type) ?? obj;
+                    }
+                }
+
+                try
+                {
+                    var yaml = Serializer.Serialize(obj);
+                    File.WriteAllText(file, yaml);
+                }
+                catch (Exception e)
+                {
+                    Logger.Error("Failed to serialize " + file + "\n" + e);
                 }
             }
-
-            using (var streamWriter = new StreamWriter(file, false))
+            catch (Exception e)
             {
-                Serializer.Serialize(streamWriter, obj);
+                Logger.Error("Failed to deserialize " + file + "\n" + e);
             }
 
             return obj;
@@ -132,7 +175,9 @@ namespace SixModLoader.Api.Configuration
                             continue;
 
                         Logger.Info($"[{mod.Info.Name}] Reloading {attribute.File}");
-                        property.SetValue(mod.AbstractInstance, LoadConfigurationFile(property.PropertyType, Path.Combine(mod.Directory, attribute.File), Activator.CreateInstance(property.PropertyType)));
+                        property.SetValue(mod.AbstractInstance,
+                            LoadConfigurationFile(property.PropertyType, Path.Combine(mod.Directory, attribute.File),
+                                Activator.CreateInstance(property.PropertyType)));
                     }
                 }
             }

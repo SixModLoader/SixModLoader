@@ -31,8 +31,8 @@ namespace SixModLoader.Api.Extensions
     {
         public ReferenceHub Player { get; }
         public List<BroadcastMessage> Messages { get; set; } = new List<BroadcastMessage>();
-        public string[] Status { get; set; } = new string[3];
         public BroadcastMessage CurrentMessage { get; set; }
+        public string[] StaticMessages { get; set; } = new string[3];
 
         public void KillCoroutines()
         {
@@ -61,7 +61,7 @@ namespace SixModLoader.Api.Extensions
         internal static bool DisablePatches;
         public const uint MaxBroadcastTime = 300;
 
-        public static readonly Dictionary<NetworkConnection, BroadcastConnection> Connections = new Dictionary<NetworkConnection, BroadcastConnection>();
+        public static Dictionary<NetworkConnection, BroadcastConnection> Connections { get; } = new Dictionary<NetworkConnection, BroadcastConnection>();
 
         [EventHandler]
         [Priority(Priority.Highest)]
@@ -84,16 +84,22 @@ namespace SixModLoader.Api.Extensions
             }
         }
 
-        public static void SetStatus(this ReferenceHub player, int i, string status, float? time = null)
+        public static void SetStaticMessage(this ReferenceHub player, int i, string status, float? time = null)
         {
             var connection = player.playerMovementSync.connectionToClient;
-            Connections[connection].Status[i] = status;
+            Connections[connection].StaticMessages[i] = status;
 
             Update(connection);
 
             if (time.HasValue)
             {
-                Timing.CallDelayed(time.Value, () => { player.SetStatus(i, null); }, player.gameObject);
+                Timing.CallDelayed(time.Value, () =>
+                {
+                    if (Connections[connection].StaticMessages.TryGet(i, out var newStatus) && newStatus == status)
+                    {
+                        player.SetStaticMessage(i, null);
+                    }
+                }, player.gameObject);
             }
         }
 
@@ -146,7 +152,7 @@ namespace SixModLoader.Api.Extensions
                 data += "\n";
             }
 
-            data += string.Join("\n", broadcastConnection.Status.Where(x => !string.IsNullOrEmpty(x)));
+            data += string.Join("\n", broadcastConnection.StaticMessages.Where(x => !string.IsNullOrEmpty(x)));
 
             InvokeOriginal(() =>
             {
