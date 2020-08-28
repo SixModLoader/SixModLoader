@@ -23,22 +23,6 @@ namespace SixModLoader.Api.Extensions
 
     public static class CommandExtensions
     {
-        public static bool CheckPermission(this ICommandSender sender, string permission)
-        {
-            if (sender is PlayerCommandSender playerSender)
-            {
-                var player = ReferenceHub.GetHub(playerSender.Processor.gameObject);
-                return player.CheckPermission(permission);
-            }
-
-            return true;
-        }
-
-        public static bool CheckPermission(this ReferenceHub player, string permission)
-        {
-            return player.gameObject == PlayerManager.localPlayer; // || TODO permissions
-        }
-
         public static List<ReferenceHub> MatchPlayers(string text, ICommandSender sender = null)
         {
             if (text == null)

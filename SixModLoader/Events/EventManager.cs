@@ -51,7 +51,9 @@ namespace SixModLoader.Events
                 @event.Call(list);
             }
 
+#if DEBUG
             Logger.Debug($"Called {@event} in {@event.Handlers.Count} handler(s)");
+#endif
         }
 
         public void Register(object obj)

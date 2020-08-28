@@ -4,4 +4,7 @@
 /api/*.yml
 /api/.manifest
 
+/scpsl/*.yml
+/scpsl/.manifest
+
 /index.md

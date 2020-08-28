@@ -34,7 +34,7 @@ namespace SixModLoader.Api
                 var hub = ReferenceHub.GetHub(__instance.gameObject);
                 foreach (var effect in Instance.CustomPlayerEffects)
                 {
-                    __instance.AllEffects.Add(effect, (PlayerEffect) Activator.CreateInstance(effect, new object[] {hub}));
+                    __instance.AllEffects.Add(effect, (PlayerEffect) Activator.CreateInstance(effect, new object[] { hub }));
                 }
             }
         }
@@ -61,8 +61,6 @@ namespace SixModLoader.Api
 
                 if (ReferenceHub.Hubs.Values.All(x => x.playerEffectsController.syncEffectsIntensity != __instance))
                     return;
-
-                Logger.Debug("Hiding custom effects (all)");
 
                 __state = __instance.objects.ToList();
 
@@ -107,14 +105,12 @@ namespace SixModLoader.Api
                 if (ReferenceHub.Hubs.Values.All(x => x.playerEffectsController.syncEffectsIntensity != __instance))
                     return;
 
-                Logger.Debug("Hiding custom effects (delta)");
-
                 var effects = ReferenceHub.HostHub.playerEffectsController.AllEffects.Keys;
 
                 for (var i = 0; i < __instance.changes.Count; i++)
                 {
                     var change = __instance.changes[i];
-                    __instance.changes[i] = new SyncList<byte>.Change {index = change.index - effects.Take(change.index).Count(x => Instance.CustomPlayerEffects.Contains(x)), item = change.item, operation = change.operation};
+                    __instance.changes[i] = new SyncList<byte>.Change { index = change.index - effects.Take(change.index).Count(x => Instance.CustomPlayerEffects.Contains(x)), item = change.item, operation = change.operation };
                 }
             }
         }

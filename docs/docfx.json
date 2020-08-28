@@ -18,13 +18,30 @@
       "dest": "api",
       "filter": "filter_config.yml"
     }
+    // TODO https://github.com/dotnet/docfx/issues/5501
+    //    {
+    //      "src": [
+    //        {
+    //          "src": "%SCPSL_SERVER%/SCPSL_Data/Managed",
+    //          "files": [
+    //            "Assembly-CSharp.dll",
+    //            "Assembly-CSharp-firstpass.dll",
+    //            "CommandSystem.Core.dll",
+    //            "Mirror.dll",
+    //            "UnityEngine.dll",
+    //            "UnityEngine.CoreModule.dll"
+    //          ]
+    //        }
+    //      ],
+    //      "dest": "scpsl"
+    //    }
   ],
   "build": {
     "content": [
       {
         "files": [
           "api/**.yml",
-          "api/index.md"
+          "scpsl/**.yml"
         ]
       },
       {

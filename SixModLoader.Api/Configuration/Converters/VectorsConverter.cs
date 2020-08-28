@@ -62,17 +62,17 @@ namespace SixModLoader.Api.Configuration.Converters
             switch (value)
             {
                 case Vector2 vector:
-                    axes.AddRange(new[] {vector.x, vector.y});
+                    axes.AddRange(new[] { vector.x, vector.y });
                     break;
                 case Vector3 vector:
-                    axes.AddRange(new[] {vector.x, vector.y, vector.z});
+                    axes.AddRange(new[] { vector.x, vector.y, vector.z });
                     break;
                 case Vector4 vector:
-                    axes.AddRange(new[] {vector.x, vector.y, vector.z, vector.w});
+                    axes.AddRange(new[] { vector.x, vector.y, vector.z, vector.w });
                     break;
             }
 
-            eventEmitter.Emit(new SequenceStartEventInfo(new ObjectDescriptor(axes, axes.GetType(), axes.GetType())) {Style = SequenceStyle.Flow}, emitter);
+            eventEmitter.Emit(new SequenceStartEventInfo(new ObjectDescriptor(axes, axes.GetType(), axes.GetType())) { Style = SequenceStyle.Flow }, emitter);
 
             foreach (var axis in axes)
             {

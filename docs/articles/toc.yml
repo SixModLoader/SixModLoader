@@ -1,2 +1,6 @@
+- name: Why SixModLoader?
+  href: why.md
 - name: Installation
   href: installation.md
+- name: Migration guide
+  href: migration-guide.md

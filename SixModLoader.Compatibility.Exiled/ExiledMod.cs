@@ -46,7 +46,7 @@ namespace SixModLoader.Compatibility.Exiled
             ModDirectory = Path.Combine(Loader.ModsPath, "Exiled");
         }
 
-        private static string[] FilesToDownload { get; } = {"EXILED/Exiled.Loader.dll", "EXILED/Plugins/Exiled.Events.dll", "EXILED/Plugins/Exiled.Permissions.dll"};
+        private static string[] FilesToDownload { get; } = { "EXILED/Exiled.Loader.dll", "EXILED/Plugins/Exiled.Events.dll", "EXILED/Plugins/Exiled.Permissions.dll" };
 
         [EventHandler(typeof(ModEnableEvent))]
         public void OnEnable()
@@ -84,7 +84,7 @@ namespace SixModLoader.Compatibility.Exiled
                     var releases = await gitHubClient.Repository.Release.GetAll("galaxy119", "EXILED");
 
                     var newerRelease = releases
-                        // .Where(x => version == null || x.Prerelease == version?.IsPrerelease) TODO wait for exiled to stop abusing semver
+                        .Where(x => x.Prerelease == version?.IsPrerelease)
                         .Select(x => (Release: x, Version: SemanticVersion.TryParse(x.TagName, out var v) ? v : null))
                         .Where(x => x.Version != null)
                         .OrderByDescending(x => x.Version)
@@ -97,7 +97,7 @@ namespace SixModLoader.Compatibility.Exiled
 
                         var reader = ReaderFactory.Open(await httpClient.GetStreamAsync(newerRelease.Release.Assets.Single(x => x.Name == "Exiled.tar.gz").BrowserDownloadUrl));
 
-                        var extractionOptions = new ExtractionOptions {Overwrite = true};
+                        var extractionOptions = new ExtractionOptions { Overwrite = true };
                         while (reader.MoveToNextEntry())
                         {
                             if (reader.Entry.IsDirectory)
