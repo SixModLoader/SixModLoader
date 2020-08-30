@@ -48,7 +48,7 @@ namespace SixModLoader.ExampleMod
         }
 
         public string Command => "example";
-        public string[] Aliases => new[] {"ex"};
+        public string[] Aliases => new[] { "ex" };
         public string Description => "Example command!";
     }
 }

@@ -28,14 +28,6 @@ namespace SixModLoader.Api.Events.Player.Inventory
                     NewItem = __instance.GetItemByUniq(value)
                 };
                 EventManager.Instance.Broadcast(@event);
-                
-                // TODO changing new item
-                // if (i != @event.NewItem.uniq)
-                // {
-                //     i = @event.NewItem.uniq;
-                //     __instance.NetworkcurItem = @event.NewItem.id;
-                //     __instance.SetDirtyBit(1UL);
-                // }
             }
         }
     }

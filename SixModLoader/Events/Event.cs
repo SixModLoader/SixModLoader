@@ -22,7 +22,7 @@ namespace SixModLoader.Events
             Handlers.Add(handler);
             try
             {
-                handler.Method.Invoke(handler.Instance, handler.Method.GetParameters().Length > 0 ? new object[] {this} : new object[0]);
+                handler.Method.Invoke(handler.Instance, handler.Method.GetParameters().Length > 0 ? new object[] { this } : new object[0]);
             }
             catch (Exception e)
             {

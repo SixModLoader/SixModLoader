@@ -20,7 +20,7 @@ namespace SixModLoader.Api.Patches
 
             public static IEnumerable<MethodBase> TargetMethods()
             {
-                return new MethodBase[] {m_ProcessQuery, m_ProcessGameConsoleQuery};
+                return new MethodBase[] { m_ProcessQuery, m_ProcessGameConsoleQuery };
             }
 
             private static readonly MethodInfo m_ToUpper = AccessTools.Method(typeof(string), nameof(string.ToUpper));

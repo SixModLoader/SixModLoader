@@ -12,7 +12,7 @@ namespace SixModLoader.Api.Extensions
 
             target.transform.localScale = vector;
 
-            var destroyMessage = new ObjectDestroyMessage {netId = identity.netId};
+            var destroyMessage = new ObjectDestroyMessage { netId = identity.netId };
 
             foreach (var player in PlayerManager.players)
             {
@@ -29,7 +29,7 @@ namespace SixModLoader.Api.Extensions
 
         public static Inventory.SyncItemInfo GetItemByUniq(this Inventory inventory, int uniq)
         {
-            return inventory.items.Cast<Inventory.SyncItemInfo?>().FirstOrDefault(x => x != null && x.Value.uniq == uniq) ?? new Inventory.SyncItemInfo {id = ItemType.None};
+            return inventory.items.Cast<Inventory.SyncItemInfo?>().FirstOrDefault(x => x != null && x.Value.uniq == uniq) ?? new Inventory.SyncItemInfo { id = ItemType.None };
         }
 
         public static void OverridePosition(this PlayerMovementSync playerMovementSync, Vector3 position, float rotation = 0, bool forceGround = false)

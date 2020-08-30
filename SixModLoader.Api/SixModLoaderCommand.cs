@@ -17,7 +17,7 @@ namespace SixModLoader.Api
 
         public ICommand DefaultCommand;
         public override string Command => "sixmodloader";
-        public override string[] Aliases => new[] {"sml"};
+        public override string[] Aliases => new[] { "sml" };
         public override string Description => "SixModLoader";
 
         public SixModLoaderCommand()
@@ -69,7 +69,7 @@ namespace SixModLoader.Api
             }
 
             public string Command => "version";
-            public string[] Aliases => new[] {"ver"};
+            public string[] Aliases => new[] { "ver" };
             public string Description => "Gets version of SixModLoader or mod";
         }
 
@@ -94,14 +94,14 @@ namespace SixModLoader.Api
                     mods.Add(mod);
                 }
 
-                new ModReloadEvent {Mods = mods}.Call();
+                new ModReloadEvent { Mods = mods }.Call();
 
                 response = $"Reloaded {mods.Count} {"mod".Pluralize(mods.Count)}";
                 return true;
             }
 
             public string Command => "reload";
-            public string[] Aliases => new[] {"rl"};
+            public string[] Aliases => new[] { "rl" };
             public string Description => "Reload configs";
         }
 
