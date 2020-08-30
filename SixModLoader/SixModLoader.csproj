@@ -4,8 +4,8 @@
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
         <LangVersion>latest</LangVersion>
 
-        <Description>Experimental modern SCP:SL mod loader</Description>
-        <Version>0.1.0-pre.9</Version>
+        <Description>Not bloated but feature rich server-side mod loader for SCP:SL</Description>
+        <Version>0.1.0</Version>
         <Authors>SixModLoader</Authors>
 
         <RepositoryUrl>https://github.com/SixModLoader/SixModLoader</RepositoryUrl>

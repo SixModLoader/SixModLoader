@@ -1,30 +1,30 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <TargetFramework>net472</TargetFramework>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <LangVersion>latest</LangVersion>
+    <PropertyGroup>
+        <TargetFramework>net472</TargetFramework>
+        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+        <LangVersion>latest</LangVersion>
 
-    <Description>Example SixModLoader mod</Description>
-    <Version>0.1.0-pre.7</Version>
-    <Authors>SixModLoader</Authors>
+        <Description>Example SixModLoader mod</Description>
+        <Version>1.0.0</Version>
+        <Authors>SixModLoader</Authors>
 
-    <RepositoryUrl>https://github.com/SixModLoader/SixModLoader</RepositoryUrl>
-    <RepositoryType>git</RepositoryType>
-    <PackageProjectUrl>https://sixmodloader.github.io/</PackageProjectUrl>
-    <PackageTags>SixModLoader SCPSL</PackageTags>
-    <PackageLicenseExpression>MIT</PackageLicenseExpression>
-  </PropertyGroup>
+        <RepositoryUrl>https://github.com/SixModLoader/SixModLoader</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
+        <PackageProjectUrl>https://sixmodloader.github.io/</PackageProjectUrl>
+        <PackageTags>SixModLoader SCPSL</PackageTags>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\SixModLoader.Api\SixModLoader.Api.csproj" />
-    <ProjectReference Include="..\SixModLoader\SixModLoader.csproj" />
-  </ItemGroup>
-
-  <Import Project="$(ProjectDir)..\SCPSL.props" />
-  <Target Name="Copy" AfterTargets="Build">
     <ItemGroup>
-      <OutputFiles Include="$(OutputPath)$(AssemblyName).dll" />
+        <ProjectReference Include="..\SixModLoader.Api\SixModLoader.Api.csproj"/>
+        <ProjectReference Include="..\SixModLoader\SixModLoader.csproj"/>
     </ItemGroup>
-    <Copy SourceFiles="@(OutputFiles)" DestinationFolder="$(SCPSL_SERVER)\SixModLoader\mods\" Condition="'$(Configuration)' == 'Debug'" />
-  </Target>
+
+    <Import Project="$(ProjectDir)..\SCPSL.props"/>
+    <Target Name="Copy" AfterTargets="Build">
+        <ItemGroup>
+            <OutputFiles Include="$(OutputPath)$(AssemblyName).dll"/>
+        </ItemGroup>
+        <Copy SourceFiles="@(OutputFiles)" DestinationFolder="$(SCPSL_SERVER)\SixModLoader\mods\" Condition="'$(Configuration)' == 'Debug'"/>
+    </Target>
 </Project>
