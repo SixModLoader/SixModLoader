@@ -6,14 +6,14 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <!-- TODO -->
-        <Reference Include="./lib/SteamKit2.dll"/>
-        <Reference Include="./lib/DepotDownloader.Library.dll"/>
+        <!-- TODO https://github.com/SteamRE/SteamKit/pull/912 -->
+        <Reference Include="./lib/SteamKit2.dll" />
+        <Reference Include="./lib/DepotDownloader.Library.dll" />
 
-        <PackageReference Include="AssemblyPublicizer.Library" Version="1.0.0"/>
+        <PackageReference Include="AssemblyPublicizer.Library" Version="1.0.0" />
         <!--        <PackageReference Include="DepotDownloader.Library" Version="0.1.0" />-->
-        <PackageReference Include="Microsoft.Build.Framework" Version="16.6.0"/>
-        <PackageReference Include="Microsoft.Build.Utilities.Core" Version="16.6.0"/>
+        <PackageReference Include="Microsoft.Build.Framework" Version="16.6.0" />
+        <PackageReference Include="Microsoft.Build.Utilities.Core" Version="16.6.0" />
     </ItemGroup>
 
 </Project>
