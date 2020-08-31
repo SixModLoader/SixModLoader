@@ -6,3 +6,5 @@
 [![Discord](https://img.shields.io/discord/718554663561199687.svg?label=&logo=discord&logoColor=ffffff&color=7389D8&labelColor=6A7EC2)](https://discord.gg/Y9kb7Us)
 
 Not bloated but feature rich server-side mod loader for SCP:SL
+
+[Installation](https://sixmodloader.github.io/articles/installation.html)

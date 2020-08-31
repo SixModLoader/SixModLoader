@@ -6,7 +6,8 @@ Recommended way to install SixModLoader is using [SixModLoader.Launcher](https:/
 1. Download launcher from [release page](https://github.com/SixModLoader/SixModLoader.Launcher/releases/latest)
    *(recommended .net core `linux` or `win`, or `net472` for mono/windows only, but only if you have to)*
 2. Extract launcher executable from zip to server directory
-3. Just run `SixModLoader[.exe] launch "LocalAdmin[.exe] 7777"` and it will download/update SixModLoader, configure Doorstop and launch SCP:SL with mod loader injected!
+3. Just run `./SixModLoader launch "LocalAdmin 7777"` *(or `SixModLoader.exe launch "LocalAdmin.exe 7777"` if you are winblows masochist)*<br>
+It will download/update SixModLoader, configure Doorstop and launch SCP:SL with mod loader injected!
 
 *TIP for people using hosting providers, if your provider allows replacing LocalAdmin/MultiAdmin, you can replace it with launcher and write your arguments in `jumploader.txt`*
 
