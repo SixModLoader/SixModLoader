@@ -37,7 +37,8 @@ jobs:
         run: dotnet restore
 
       - name: Run build script
-        run:  cd .\scripts\; .\build.bat
+        shell: powershell
+        run: cd .\scripts\; .\build.ps1
 
       - name: Download docfx
         uses: carlosperate/download-file-action@v1.0.3
