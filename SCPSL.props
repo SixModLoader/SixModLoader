@@ -10,16 +10,16 @@
         </ProjectReference>
     </ItemGroup>
 
-    <UsingTask TaskName="DownloadDepot" AssemblyFile="$(MSBuildThisFileDirectory)/SixModLoader.MSBuild/bin/$(Configuration)/netstandard2.0/SixModLoader.MSBuild.dll"/>
-    <UsingTask TaskName="Publicize" AssemblyFile="$(MSBuildThisFileDirectory)/SixModLoader.MSBuild/bin/$(Configuration)/netstandard2.0/SixModLoader.MSBuild.dll"/>
+    <UsingTask TaskName="DownloadDepot" AssemblyFile="$(MSBuildThisFileDirectory)/SixModLoader.MSBuild/bin/$(Configuration)/netstandard2.0/SixModLoader.MSBuild.dll" />
+    <UsingTask TaskName="Publicize" AssemblyFile="$(MSBuildThisFileDirectory)/SixModLoader.MSBuild/bin/$(Configuration)/netstandard2.0/SixModLoader.MSBuild.dll" />
     <Target Name="DownloadScpSl" BeforeTargets="ResolveAssemblyReferences">
-        <DownloadDepot InstallDirectory="$(MSBuildThisFileDirectory)/SCPSL" DepotId="996562" ManifestId="4078729528241762318"/>
+        <DownloadDepot InstallDirectory="$(MSBuildThisFileDirectory)/SCPSL" DepotId="996562" ManifestId="4078729528241762318" />
 
         <ItemGroup>
-            <Publicize Include="Assembly-CSharp.dll"/>
-            <Publicize Include="Mirror.dll"/>
+            <Publicize Include="Assembly-CSharp.dll" />
+            <Publicize Include="Mirror.dll" />
         </ItemGroup>
-        <Publicize CurrentDirectory="$(MSBuildThisFileDirectory)/SCPSL/SCPSL_Data/Managed" Input="@(Publicize)"/>
+        <Publicize CurrentDirectory="$(MSBuildThisFileDirectory)/SCPSL/SCPSL_Data/Managed" Input="@(Publicize)" />
     </Target>
 
     <ItemGroup>

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.IO;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using DepotDownloader;
@@ -18,7 +19,19 @@ namespace SixModLoader.MSBuild
 
         public override bool Execute()
         {
-            Log.LogMessage(MessageImportance.High, "Downloading SCP:SL references to " + InstallDirectory);
+            DepotConfigStore.LoadFromFile(Path.Combine(InstallDirectory, ".DepotDownloader", "depot.config"));
+            if (DepotConfigStore.Instance.InstalledManifestIDs.TryGetValue(DepotId, out var installedManifest))
+            {
+                if (ManifestId == installedManifest)
+                {
+                    Log.LogMessage(MessageImportance.High, "Correct SCP:SL version installed, skipping");
+                    return true;
+                }
+
+                Log.LogMessage(MessageImportance.High, "Different SCP:SL version installed, reinstalling");
+            }
+
+            Log.LogMessage(MessageImportance.High, "Downloading SCP:SL to " + InstallDirectory);
 
             if (!AccountSettingsStore.Loaded)
             {
@@ -78,7 +91,9 @@ namespace SixModLoader.MSBuild
                 }
             }
 
-            ContentDownloader.DownloadAppAsync(AppId, DepotId, ManifestId, Branch, "linux", "64", null, false, false).GetAwaiter().GetResult();
+            ContentDownloader.DownloadAppAsync(AppId, DepotId, ManifestId, Branch, "linux", "64", null, false, false).ConfigureAwait(false).GetAwaiter().GetResult();
+            ContentDownloader.ShutdownSteam3();
+            Log.LogMessage(MessageImportance.High, "Downloaded SCP:SL");
 
             return true;
         }
