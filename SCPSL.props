@@ -1,37 +1,59 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project>
+    <PropertyGroup Condition="'$(SolutionDir)' == ''">
+        <SolutionDir>$([System.IO.Path]::GetDirectoryName($(MSBuildProjectDirectory)))\</SolutionDir>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="$(MSBuildThisFileDirectory)/SixModLoader.MSBuild/SixModLoader.MSBuild.csproj">
+            <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+        </ProjectReference>
+    </ItemGroup>
+
+    <UsingTask TaskName="DownloadDepot" AssemblyFile="$(MSBuildThisFileDirectory)/SixModLoader.MSBuild/bin/$(Configuration)/netstandard2.0/SixModLoader.MSBuild.dll"/>
+    <UsingTask TaskName="Publicize" AssemblyFile="$(MSBuildThisFileDirectory)/SixModLoader.MSBuild/bin/$(Configuration)/netstandard2.0/SixModLoader.MSBuild.dll"/>
+    <Target Name="DownloadScpSl" BeforeTargets="ResolveAssemblyReferences">
+        <DownloadDepot InstallDirectory="$(MSBuildThisFileDirectory)/SCPSL" DepotId="996562" ManifestId="4078729528241762318"/>
+
+        <ItemGroup>
+            <Publicize Include="Assembly-CSharp.dll"/>
+            <Publicize Include="Mirror.dll"/>
+        </ItemGroup>
+        <Publicize CurrentDirectory="$(MSBuildThisFileDirectory)/SCPSL/SCPSL_Data/Managed" Input="@(Publicize)"/>
+    </Target>
+
     <ItemGroup>
         <!-- Game -->
         <Reference Include="Assembly-CSharp">
-            <HintPath>$(SCPSL_SERVER)\SCPSL_Data\Managed\publicized_assemblies\Assembly-CSharp_publicized.dll</HintPath>
+            <HintPath>$(MSBuildThisFileDirectory)/SCPSL/SCPSL_Data/Managed/publicized_assemblies/Assembly-CSharp_publicized.dll</HintPath>
             <Private>False</Private>
         </Reference>
         <Reference Include="CommandSystem.Core">
-            <HintPath>$(SCPSL_SERVER)\SCPSL_Data\Managed\CommandSystem.Core.dll</HintPath>
+            <HintPath>$(MSBuildThisFileDirectory)/SCPSL/SCPSL_Data/Managed/CommandSystem.Core.dll</HintPath>
             <Private>False</Private>
         </Reference>
         <Reference Include="Assembly-CSharp-firstpass">
-            <HintPath>$(SCPSL_SERVER)\SCPSL_Data\Managed\Assembly-CSharp-firstpass.dll</HintPath>
+            <HintPath>$(MSBuildThisFileDirectory)/SCPSL/SCPSL_Data/Managed/Assembly-CSharp-firstpass.dll</HintPath>
             <Private>False</Private>
         </Reference>
 
         <!-- Game dependencies -->
         <Reference Include="Mirror">
-            <HintPath>$(SCPSL_SERVER)\SCPSL_Data\Managed/publicized_assemblies\Mirror_publicized.dll</HintPath>
+            <HintPath>$(MSBuildThisFileDirectory)/SCPSL/SCPSL_Data/Managed/publicized_assemblies/Mirror_publicized.dll</HintPath>
             <Private>False</Private>
         </Reference>
 
         <!-- Unity -->
         <Reference Include="UnityEngine">
-            <HintPath>$(SCPSL_SERVER)\SCPSL_Data\Managed\UnityEngine.dll</HintPath>
+            <HintPath>$(MSBuildThisFileDirectory)/SCPSL/SCPSL_Data/Managed/UnityEngine.dll</HintPath>
             <Private>False</Private>
         </Reference>
         <Reference Include="UnityEngine.CoreModule">
-            <HintPath>$(SCPSL_SERVER)\SCPSL_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
+            <HintPath>$(MSBuildThisFileDirectory)/SCPSL/SCPSL_Data/Managed/UnityEngine.CoreModule.dll</HintPath>
             <Private>False</Private>
         </Reference>
         <Reference Include="UnityEngine.PhysicsModule">
-            <HintPath>$(SCPSL_SERVER)\SCPSL_Data\Managed\UnityEngine.PhysicsModule.dll</HintPath>
+            <HintPath>$(MSBuildThisFileDirectory)/SCPSL/SCPSL_Data/Managed/UnityEngine.PhysicsModule.dll</HintPath>
             <Private>False</Private>
         </Reference>
     </ItemGroup>

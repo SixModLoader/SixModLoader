@@ -33,38 +33,6 @@ jobs:
         env:
           NUGET_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
 
-      - name: Download DepotDownloader
-        uses: carlosperate/download-file-action@v1.0.3
-        with:
-          file-url: https://github.com/SteamRE/DepotDownloader/releases/download/DepotDownloader_2.3.6/depotdownloader-2.3.6.zip
-
-      - name: Extract DepotDownloader
-        uses: DuckSoft/extract-7z-action@v1.0
-        with:
-          pathSource: depotdownloader-2.3.6.zip
-          pathTarget: scripts
-
-      - name: Run SCP:SL download script
-        run:  cd .\scripts\; .\depotdownloader.bat -app 996560 -depot 996562 -filelist dependencies.txt -dir $Env:SCPSL_SERVER
-
-      - name: Download AssemblyPublicizer
-        uses: carlosperate/download-file-action@v1.0.3
-        with:
-          file-url: https://github.com/CabbageCrow/AssemblyPublicizer/releases/download/v1.1.0/AssemblyPublicizer.zip
-          location: ${{ env.SCPSL_SERVER }}\SCPSL_Data\Managed
-
-      - name: Extract AssemblyPublicizer
-        uses: DuckSoft/extract-7z-action@v1.0
-        with:
-          pathSource: ${{ env.SCPSL_SERVER }}\SCPSL_Data\Managed\AssemblyPublicizer.zip
-          pathTarget: ${{ env.SCPSL_SERVER }}\SCPSL_Data\Managed
-
-      - name: Publicize
-        run: |
-          cd ${{ env.SCPSL_SERVER }}\SCPSL_Data\Managed
-          AssemblyPublicizer\AssemblyPublicizer.exe Assembly-CSharp.dll
-          AssemblyPublicizer\AssemblyPublicizer.exe Mirror.dll
-
       - name: Restore NuGet
         run: dotnet restore
 
@@ -99,24 +67,6 @@ jobs:
         with:
           name: SixModLoader
           path: out/
-
-      - name: Upload ExampleMod
-        uses: actions/upload-artifact@v2
-        with:
-          name: ExampleMod
-          path: SixModLoader.ExampleMod/bin/Release/net472/SixModLoader.ExampleMod.dll
-
-      - name: Upload DevTools
-        uses: actions/upload-artifact@v2
-        with:
-          name: DevTools
-          path: SixModLoader.DevTools/bin/Release/net472/SixModLoader.DevTools.dll
-
-      - name: Upload SixModLoader.Compatibility.Exiled
-        uses: actions/upload-artifact@v2
-        with:
-          name: SixModLoader.Compatibility.Exiled
-          path: SixModLoader.Compatibility.Exiled/bin/Release/net472/SixModLoader.Compatibility.Exiled.dll
 
       - if: ${{ github.event_name == 'release' }}
         run: 7z a SixModLoader.zip ./out/*
