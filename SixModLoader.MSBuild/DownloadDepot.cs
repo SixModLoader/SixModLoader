@@ -13,6 +13,8 @@ namespace SixModLoader.MSBuild
         public uint AppId { get; set; } = 996560;
         public uint DepotId { get; set; } = ContentDownloader.INVALID_DEPOT_ID;
         public ulong ManifestId { get; set; } = ContentDownloader.INVALID_MANIFEST_ID;
+        public string Branch { get; set; } = "public";
+        public string OperatingSystem { get; set; } = "linux";
 
         public override bool Execute()
         {
@@ -43,7 +45,7 @@ namespace SixModLoader.MSBuild
                 "SCPSL_Data/Managed/UnityEngine.PhysicsModule.dll"
             };
 
-            ContentDownloader.DownloadAppAsync(AppId, DepotId, ManifestId, "public", null, null, null, false, false).GetAwaiter().GetResult();
+            ContentDownloader.DownloadAppAsync(AppId, DepotId, ManifestId, Branch, OperatingSystem, null, null, false, false).GetAwaiter().GetResult();
 
             return true;
         }
