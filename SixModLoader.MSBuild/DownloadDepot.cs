@@ -39,7 +39,7 @@ namespace SixModLoader.MSBuild
             foreach (var fileEntry in new[]
             {
                 "SCPSL_Data/Managed/Assembly-CSharp.dll",
-                "SCPSL_Dzata/Managed/Assembly-CSharp-firstpass.dll",
+                "SCPSL_Data/Managed/Assembly-CSharp-firstpass.dll",
                 "SCPSL_Data/Managed/CommandSystem.Core.dll",
 
                 "SCPSL_Data/Managed/Mirror.dll",
