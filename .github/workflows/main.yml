@@ -91,4 +91,6 @@ jobs:
           dotnet tool install --global gpr
           dotnet pack ../SixModLoader -c Release -o .
           dotnet pack ../SixModLoader.Api -c Release -o .
+
+          gpr setApiKey ${{secrets.GITHUB_TOKEN}}
           gpr push *.nupkg
