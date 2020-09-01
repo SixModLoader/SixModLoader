@@ -10,8 +10,8 @@
         </ProjectReference>
     </ItemGroup>
 
-    <UsingTask TaskName="DownloadDepot" AssemblyFile="$(MSBuildThisFileDirectory)/SixModLoader.MSBuild/bin/$(Configuration)/netstandard2.0/SixModLoader.MSBuild.dll" />
-    <UsingTask TaskName="Publicize" AssemblyFile="$(MSBuildThisFileDirectory)/SixModLoader.MSBuild/bin/$(Configuration)/netstandard2.0/SixModLoader.MSBuild.dll" />
+    <UsingTask TaskName="DownloadDepot" AssemblyFile="$(MSBuildThisFileDirectory)/SixModLoader.MSBuild/bin/$(Configuration)/net472/SixModLoader.MSBuild.dll" />
+    <UsingTask TaskName="Publicize" AssemblyFile="$(MSBuildThisFileDirectory)/SixModLoader.MSBuild/bin/$(Configuration)/net472/SixModLoader.MSBuild.dll" />
     <Target Name="DownloadScpSl" BeforeTargets="ResolveAssemblyReferences">
         <DownloadDepot InstallDirectory="$(MSBuildThisFileDirectory)/SCPSL" DepotId="996562" ManifestId="4078729528241762318" />
 
