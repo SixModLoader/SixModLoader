@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using DepotDownloader;
@@ -17,18 +18,38 @@ namespace SixModLoader.MSBuild
         public ulong ManifestId { get; set; } = ContentDownloader.INVALID_MANIFEST_ID;
         public string Branch { get; set; } = "public";
 
+        public string[] Files { get; set; } =
+        {
+            "SCPSL_Data/Managed/Assembly-CSharp.dll",
+            "SCPSL_Data/Managed/Assembly-CSharp-firstpass.dll",
+            "SCPSL_Data/Managed/CommandSystem.Core.dll",
+
+            "SCPSL_Data/Managed/Mirror.dll",
+            "SCPSL_Data/Managed/UnityEngine.dll",
+            "SCPSL_Data/Managed/UnityEngine.CoreModule.dll",
+            "SCPSL_Data/Managed/UnityEngine.PhysicsModule.dll"
+        };
+
         public override bool Execute()
         {
             DepotConfigStore.LoadFromFile(Path.Combine(InstallDirectory, ".DepotDownloader", "depot.config"));
             if (DepotConfigStore.Instance.InstalledManifestIDs.TryGetValue(DepotId, out var installedManifest))
             {
-                if (ManifestId == installedManifest)
+                var missing = Files.Where(x => !File.Exists(Path.Combine(InstallDirectory, x))).ToArray();
+                if (missing.Any())
                 {
-                    Log.LogMessage(MessageImportance.High, "Correct SCP:SL version installed, skipping");
-                    return true;
+                    Log.LogMessage(MessageImportance.High, $"Missing [{string.Join(", ", missing)}] reinstalling");
                 }
+                else
+                {
+                    if (ManifestId == installedManifest)
+                    {
+                        Log.LogMessage(MessageImportance.High, "Correct SCP:SL version installed, skipping");
+                        return true;
+                    }
 
-                Log.LogMessage(MessageImportance.High, "Different SCP:SL version installed, reinstalling");
+                    Log.LogMessage(MessageImportance.High, "Different SCP:SL version installed, reinstalling");
+                }
             }
 
             Log.LogMessage(MessageImportance.High, "Downloading SCP:SL to " + InstallDirectory);
@@ -49,17 +70,7 @@ namespace SixModLoader.MSBuild
             ContentDownloader.Config.FilesToDownload = new List<string>();
 
             var isWindows = RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
-            foreach (var fileEntry in new[]
-            {
-                "SCPSL_Data/Managed/Assembly-CSharp.dll",
-                "SCPSL_Data/Managed/Assembly-CSharp-firstpass.dll",
-                "SCPSL_Data/Managed/CommandSystem.Core.dll",
-
-                "SCPSL_Data/Managed/Mirror.dll",
-                "SCPSL_Data/Managed/UnityEngine.dll",
-                "SCPSL_Data/Managed/UnityEngine.CoreModule.dll",
-                "SCPSL_Data/Managed/UnityEngine.PhysicsModule.dll"
-            })
+            foreach (var fileEntry in Files)
             {
                 try
                 {
