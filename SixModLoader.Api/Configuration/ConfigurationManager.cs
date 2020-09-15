@@ -93,7 +93,8 @@ namespace SixModLoader.Api.Configuration
                 .WithNamingConvention(HyphenatedNamingConvention.Instance)
                 .WithEventEmitter(next => eventEmitter = new ForceQuotedStringValuesEventEmitter(next))
                 .WithTypeInspector(inner => new CommentGatheringTypeInspector(inner))
-                .WithEmissionPhaseObjectGraphVisitor(args => new CommentsObjectGraphVisitor(args.InnerVisitor));
+                .WithEmissionPhaseObjectGraphVisitor(args => new CommentsObjectGraphVisitor(args.InnerVisitor))
+                .DisableAliases();
 
             foreach (var converter in Converters)
             {
@@ -112,14 +113,6 @@ namespace SixModLoader.Api.Configuration
         });
 
         public static ISerializer Serializer => _serializer.Value;
-
-        public static void Initialize()
-        {
-            SixModLoader.Instance.Harmony
-                .CreateProcessor(AccessTools.Method(typeof(ModEvent), nameof(ModEvent.Call), new Type[0]))
-                .AddPrefix(AccessTools.Method(typeof(Patch), nameof(Patch.Prefix)))
-                .Patch();
-        }
 
         public static T LoadConfigurationFile<T>(string file) where T : new()
         {
@@ -159,7 +152,8 @@ namespace SixModLoader.Api.Configuration
             return obj;
         }
 
-        public class Patch
+        [HarmonyPatch(typeof(ModEvent), nameof(ModEvent.Call))]
+        public static class Patch
         {
             public static void Prefix(ModEvent __instance)
             {

@@ -10,10 +10,7 @@ namespace SixModLoader
     {
         public static void Start()
         {
-            SixModLoader.Instance.Harmony.Patch(
-                AccessTools.Method(typeof(TcpConsole), nameof(TcpConsole.Start)),
-                new HarmonyMethod(typeof(TcpConsolePatch.StartPatch), nameof(TcpConsolePatch.StartPatch.Prefix))
-            );
+            SixModLoader.Instance.Harmony.PatchAll(typeof(TcpConsolePatch));
 
             var portString = Environment.GetCommandLineArgs().FirstOrDefault(x => x.StartsWith("-console"))?.Substring("console".Length + 1);
             if (ServerStatic.ServerOutput == null && portString != null && ushort.TryParse(portString, out var port))
@@ -29,6 +26,7 @@ namespace SixModLoader
 
         public static class TcpConsolePatch
         {
+            [HarmonyPatch(typeof(TcpConsole), nameof(TcpConsole.Start))]
             public static class StartPatch
             {
                 private static List<TcpConsole> Started { get; } = new List<TcpConsole>();

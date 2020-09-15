@@ -55,8 +55,21 @@ namespace SixModLoader.Api.Extensions
     /// </summary>
     public static class BroadcastExtensions
     {
-        private static readonly Lazy<Broadcast> _broadcast = new Lazy<Broadcast>(() => PlayerManager.localPlayer.GetComponent<Broadcast>());
-        internal static Broadcast BroadcastComponent => _broadcast.Value;
+        private static Broadcast _broadcast;
+
+        public static Broadcast BroadcastComponent
+        {
+            get
+            {
+                if (PlayerManager.localPlayer == null || !PlayerManager.LocalPlayerSet)
+                    return null;
+
+                if (_broadcast == null)
+                    _broadcast = PlayerManager.localPlayer.GetComponent<Broadcast>();
+
+                return _broadcast;
+            }
+        }
 
         internal static bool DisablePatches;
         public const uint MaxBroadcastTime = 300;

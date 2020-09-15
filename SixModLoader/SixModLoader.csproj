@@ -5,7 +5,7 @@
         <LangVersion>latest</LangVersion>
 
         <Description>Not bloated but feature rich server-side mod loader for SCP:SL</Description>
-        <Version>0.1.0</Version>
+        <Version>0.1.1</Version>
         <Authors>SixModLoader</Authors>
 
         <RepositoryUrl>https://github.com/SixModLoader/SixModLoader</RepositoryUrl>
@@ -15,7 +15,7 @@
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
     </PropertyGroup>
 
-    <Import Project="$(ProjectDir)..\SCPSL.props"/>
+    <Import Project="$(ProjectDir)..\SCPSL.props" />
     <ItemGroup>
         <PackageReference Include="Lib.Harmony">
             <Version>2.0.2</Version>
@@ -33,9 +33,9 @@
 
     <Target Name="Copy" AfterTargets="Build">
         <ItemGroup>
-            <OutputFiles Include="$(OutputPath)*.dll"/>
+            <OutputFiles Include="$(OutputPath)*.dll" />
         </ItemGroup>
-        <Copy SourceFiles="@(OutputFiles)" DestinationFolder="$(SCPSL_SERVER)\SixModLoader\bin\" Condition="'$(Configuration)' == 'Debug'"/>
-        <Copy SourceFiles="@(OutputFiles)" DestinationFolder="$(ProjectDir)..\out\bin\" Condition="'$(Configuration)' == 'Release'"/>
+        <Copy SourceFiles="@(OutputFiles)" DestinationFolder="$(SCPSL_SERVER)\SixModLoader\bin\" Condition="'$(Configuration)' == 'Debug'" />
+        <Copy SourceFiles="@(OutputFiles)" DestinationFolder="$(ProjectDir)..\out\bin\" Condition="'$(Configuration)' == 'Release'" />
     </Target>
 </Project>

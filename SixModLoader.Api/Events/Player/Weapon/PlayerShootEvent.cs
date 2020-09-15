@@ -14,6 +14,11 @@ namespace SixModLoader.Api.Events.Player.Weapon
         public Vector3 TargetPos { get; set; }
         public GameObject Target { get; set; }
 
+        public override string ToString()
+        {
+            return $"{base.ToString()}{{{Player.characterClassManager.UserId}}}";
+        }
+
         [HarmonyPatch(typeof(WeaponManager), nameof(WeaponManager.CallCmdShoot))]
         public class Patch
         {

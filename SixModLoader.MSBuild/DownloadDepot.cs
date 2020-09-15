@@ -13,10 +13,11 @@ namespace SixModLoader.MSBuild
         [Required]
         public string InstallDirectory { get; set; }
 
-        public uint AppId { get; set; } = 996560;
-        public uint DepotId { get; set; } = ContentDownloader.INVALID_DEPOT_ID;
+        public uint AppId { get; set; } = 996560; // SCP: Secret Laboratory Dedicated Server
+        public uint DepotId { get; set; } = 996562; // Linux Depot
         public ulong ManifestId { get; set; } = ContentDownloader.INVALID_MANIFEST_ID;
         public string Branch { get; set; } = "public";
+        public string Password { get; set; } = null;
 
         public string[] Files { get; set; } =
         {
@@ -64,6 +65,7 @@ namespace SixModLoader.MSBuild
             ContentDownloader.Config.MaxServers = 32;
             ContentDownloader.Config.MaxDownloads = 8;
 
+            ContentDownloader.Config.BetaPassword = Password;
             ContentDownloader.Config.InstallDirectory = InstallDirectory;
             ContentDownloader.Config.UsingFileList = true;
             ContentDownloader.Config.FilesToDownloadRegex = new List<Regex>();

@@ -6,6 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using NuGet.Versioning;
 using SixModLoader.Events;
 using SixModLoader.Mods;
+using SixModLoader.Patches;
 using UnityEngine.SceneManagement;
 
 namespace SixModLoader
@@ -22,7 +23,7 @@ namespace SixModLoader
 
         public SemanticVersion Version { get; internal set; }
 
-        public VersionRange TargetGameVersion { get; } = VersionRange.Parse("[10.0.2]");
+        public VersionRange TargetGameVersion { get; } = VersionRange.Parse("[10.0.3]");
 
         public bool IsGameCompatible => TargetGameVersion.Satisfies(GameVersionParser.Parse().ToNuGetVersion());
 
@@ -60,6 +61,8 @@ namespace SixModLoader
             ServerOutputWrapper.Start();
 
             Logger.Info("Loaded!");
+
+            Harmony.PatchAll<HarmonyPatches>();
 
             Directory.CreateDirectory(DataPath);
             Directory.CreateDirectory(ModsPath);

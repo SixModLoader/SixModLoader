@@ -17,15 +17,8 @@ namespace SixModLoader.Api.Extensions
             harmony.UnpatchAll(harmony.Id);
         }
 
-        public static void Initialize()
-        {
-            SixModLoader.Instance.Harmony
-                .CreateProcessor(AccessTools.Method(typeof(ModEvent), nameof(ModEvent.Call), new Type[0]))
-                .AddPrefix(AccessTools.Method(typeof(Patch), nameof(Patch.Prefix)))
-                .Patch();
-        }
-
-        public class Patch
+        [HarmonyPatch(typeof(ModEvent), nameof(ModEvent.Call))]
+        public static class Patch
         {
             public static void Prefix(ModEvent __instance)
             {

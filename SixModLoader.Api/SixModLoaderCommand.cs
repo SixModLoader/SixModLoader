@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Linq;
+using System.Reflection;
 using CommandSystem;
+using HarmonyLib;
 using SixModLoader.Api.Extensions;
 using SixModLoader.Mods;
 
@@ -105,11 +107,66 @@ namespace SixModLoader.Api
             public string Description => "Reload configs";
         }
 
+        public class PatchesCommand : ICommand
+        {
+            public bool Execute(ArraySegment<string> arguments, ICommandSender sender, out string response)
+            {
+                var methodInfo = AccessTools.Method(arguments.At(0), arguments.Skip(1).Select(AccessTools.TypeByName).ToArray());
+                HarmonyLib.Patches patches;
+
+                try
+                {
+                    patches = Harmony.GetPatchInfo(methodInfo);
+                }
+                catch (Exception e) when (e is ArgumentException || e is AmbiguousMatchException)
+                {
+                    response = e.Message;
+                    return false;
+                }
+
+                response = methodInfo.FullDescription();
+
+                string Format(Patch patch) => $"{patch.PatchMethod.FullDescription()} ({patch.owner})";
+
+                if (patches.Owners.Any())
+                {
+                    response += $"\nOwners: {patches.Owners.Join()}";
+                }
+
+                if (patches.Transpilers.Any())
+                {
+                    response += $"\nTranspilers: {patches.Transpilers.Select(Format).Join()}";
+                }
+
+                if (patches.Prefixes.Any())
+                {
+                    response += $"\nPrefixes: {patches.Prefixes.Select(Format).Join()}";
+                }
+
+                if (patches.Postfixes.Any())
+                {
+                    response += $"\nPostfixes: {patches.Postfixes.Select(Format).Join()}";
+                }
+
+                if (patches.Finalizers.Any())
+                {
+                    response += $"\nFinalizers: {patches.Finalizers.Select(Format).Join()}";
+                }
+
+                return true;
+            }
+
+            public string Command => "patches";
+            public string[] Aliases => new string[0];
+            public string Description => "Debug harmony patches";
+        }
+
         public sealed override void LoadGeneratedCommands()
         {
             RegisterCommand(DefaultCommand = new VersionCommand());
             RegisterCommand(new ModsCommand());
             RegisterCommand(new ReloadCommand());
+            RegisterCommand(new PatchesCommand());
         }
     }
 }

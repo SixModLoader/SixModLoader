@@ -22,8 +22,8 @@ namespace SixModLoader.Api
         {
             loader.EventManager.RegisterStatic(typeof(BroadcastExtensions));
             loader.EventManager.RegisterStatic(typeof(ConfigurationManager));
-            ConfigurationManager.Initialize();
-            HarmonyExtensions.Initialize();
+            Harmony.PatchAll<ConfigurationManager>();
+            Harmony.PatchAll(typeof(HarmonyExtensions));
         }
 
         [EventHandler(typeof(ModEnableEvent))]

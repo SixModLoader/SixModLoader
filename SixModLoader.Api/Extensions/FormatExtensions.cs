@@ -57,7 +57,17 @@ namespace SixModLoader.Api.Extensions
         /// <returns>Text with changed color</returns>
         public static string Color(this string text, ReferenceHub player)
         {
-            return text.Color(player.characterClassManager.CurRole.classColor);
+            return text.Color(player.characterClassManager.CurRole);
+        }
+
+        public static string Color(this string text, RoleType roleType)
+        {
+            return text.Color(CharacterClassManager._staticClasses.SafeGet(roleType));
+        }
+
+        public static string Color(this string text, Role role)
+        {
+            return text.Color(role.classColor);
         }
 
         /// <summary>

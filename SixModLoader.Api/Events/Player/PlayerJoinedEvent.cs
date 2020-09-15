@@ -12,7 +12,7 @@ namespace SixModLoader.Api.Events.Player
             {
                 var @event = new PlayerJoinedEvent
                 {
-                    Player = __instance.hub
+                    Player = __instance._hub
                 };
 
                 EventManager.Instance.Broadcast(@event);
