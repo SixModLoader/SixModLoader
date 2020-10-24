@@ -110,9 +110,21 @@ namespace SixModLoader
         public void Error(object message)
         {
             Log(message?.ToString(), LogLevel.Error, ConsoleColor.Red);
-            if (message is ReflectionTypeLoadException typeLoadException)
+
+            var exception = message as Exception;
+            while (exception != null)
             {
-                Error($"Exceptions: {typeLoadException.LoaderExceptions.Select(x => x.ToString()).Join()}");
+                switch (exception)
+                {
+                    case ReflectionTypeLoadException reflectionTypeLoadException:
+                        Error($"Exceptions: {reflectionTypeLoadException.LoaderExceptions.Select(x => x.ToString()).Join()}");
+                        break;
+                    case TypeLoadException typeLoadException:
+                        Error($"Type name: {typeLoadException.TypeName}");
+                        break;
+                }
+
+                exception = exception.InnerException;
             }
         }
     }

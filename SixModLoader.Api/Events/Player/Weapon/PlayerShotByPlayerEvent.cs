@@ -3,6 +3,7 @@ using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
 using HarmonyLib;
+using SixModLoader.Api.Extensions;
 using SixModLoader.Events;
 
 namespace SixModLoader.Api.Events.Player.Weapon
@@ -10,10 +11,11 @@ namespace SixModLoader.Api.Events.Player.Weapon
     public class PlayerShotByPlayerEvent : PlayerEvent, ICancellableEvent
     {
         public bool Cancelled { get; set; }
-        public ReferenceHub Shooter { get; set; }
+
+        public ReferenceHub Shooter { get; }
         public PlayerStats.HitInfo HitInfo { get; set; }
-        public float Distance { get; set; }
-        public string HitboxType { get; set; }
+        public float Distance { get; }
+        public string HitboxType { get; }
 
         public float Damage
         {
@@ -26,24 +28,32 @@ namespace SixModLoader.Api.Events.Player.Weapon
             }
         }
 
+        public PlayerShotByPlayerEvent(ReferenceHub player, ReferenceHub shooter, PlayerStats.HitInfo hitInfo, float distance, string hitboxType) : base(player)
+        {
+            Shooter = shooter;
+            HitInfo = hitInfo;
+            Distance = distance;
+            HitboxType = hitboxType;
+        }
+
         public override string ToString()
         {
-            return $"{base.ToString()}{{{HitInfo.Amount}}}";
+            return $"{base.ToString()}{{{Shooter.Format()} -> {Player.Format()} (damage: {HitInfo.Amount})}}";
         }
 
         [HarmonyPatch(typeof(WeaponManager), nameof(WeaponManager.CallCmdShoot))]
         public class Patch
         {
-            public static PlayerShotByPlayerEvent Invoke(WeaponManager weaponManager, CharacterClassManager target, PlayerStats.HitInfo hitInfo, float distance, string hitboxType)
+            public static PlayerShotByPlayerEvent Invoke(WeaponManager weaponManager, ReferenceHub target, PlayerStats.HitInfo hitInfo, float distance, string hitboxType)
             {
                 var @event = new PlayerShotByPlayerEvent
-                {
-                    Player = ReferenceHub.GetHub(target.gameObject),
-                    Shooter = weaponManager._hub,
-                    HitInfo = hitInfo,
-                    Distance = distance,
-                    HitboxType = hitboxType
-                };
+                (
+                    target,
+                    weaponManager._hub,
+                    hitInfo,
+                    distance,
+                    hitboxType
+                );
 
                 EventManager.Instance.Broadcast(@event);
                 return @event;
@@ -83,7 +93,7 @@ namespace SixModLoader.Api.Events.Player.Weapon
                     new CodeInstruction(OpCodes.Ldarg_0), // load this
                     new CodeInstruction(OpCodes.Ldloc_S, 3), // load target
                     new CodeInstruction(OpCodes.Ldloc_S, hitInfoLocal), // load hitinfo
-                    new CodeInstruction(OpCodes.Ldloc_S, 10), // load distance local
+                    new CodeInstruction(OpCodes.Ldloc_S, 11), // load distance local
                     new CodeInstruction(OpCodes.Ldarg_2), // load hitboxType
                     new CodeInstruction(OpCodes.Call, m_Invoke), // call event
                     new CodeInstruction(OpCodes.Stloc_S, eventLocal), // store event

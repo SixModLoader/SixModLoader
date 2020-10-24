@@ -13,7 +13,7 @@
     <UsingTask TaskName="DownloadDepot" AssemblyFile="$(MSBuildThisFileDirectory)/SixModLoader.MSBuild/bin/$(Configuration)/net472/SixModLoader.MSBuild.dll" />
     <UsingTask TaskName="Publicize" AssemblyFile="$(MSBuildThisFileDirectory)/SixModLoader.MSBuild/bin/$(Configuration)/net472/SixModLoader.MSBuild.dll" />
     <Target Name="DownloadScpSl" BeforeTargets="ResolveAssemblyReferences">
-        <DownloadDepot InstallDirectory="$(MSBuildThisFileDirectory)/SCPSL" ManifestId="9117670850963913813" />
+        <DownloadDepot InstallDirectory="$(MSBuildThisFileDirectory)/SCPSL" ManifestId="4323064624455614777" />
 
         <ItemGroup>
             <Publicize Include="Assembly-CSharp.dll" />

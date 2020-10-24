@@ -3,6 +3,7 @@ using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
 using HarmonyLib;
+using SixModLoader.Api.Extensions;
 using SixModLoader.Events;
 
 namespace SixModLoader.Api.Events.Player.Inventory
@@ -11,19 +12,30 @@ namespace SixModLoader.Api.Events.Player.Inventory
 
     public class PlayerDroppedItemEvent : PlayerEvent
     {
-        public Inventory.SyncItemInfo Item { get; private set; }
-        public Pickup Pickup { get; private set; }
+        public Inventory.SyncItemInfo Item { get; }
+        public Pickup Pickup { get; }
+
+        public PlayerDroppedItemEvent(ReferenceHub player, Inventory.SyncItemInfo item, Pickup pickup) : base(player)
+        {
+            Item = item;
+            Pickup = pickup;
+        }
+
+        public override string ToString()
+        {
+            return $"{base.ToString()}{{{Player.Format()}, {Item} -> {Pickup}}}";
+        }
 
         public class Patch
         {
             public static PlayerDroppedItemEvent Invoke(Inventory inventory, Inventory.SyncItemInfo item, Pickup pickup)
             {
                 var @event = new PlayerDroppedItemEvent
-                {
-                    Player = ReferenceHub.GetHub(inventory.gameObject),
-                    Item = item,
-                    Pickup = pickup
-                };
+                (
+                    ReferenceHub.GetHub(inventory.gameObject),
+                    item,
+                    pickup
+                );
 
                 EventManager.Instance.Broadcast(@event);
                 return @event;

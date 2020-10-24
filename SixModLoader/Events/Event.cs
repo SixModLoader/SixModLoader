@@ -19,6 +19,11 @@ namespace SixModLoader.Events
 
         public void Call(EventHandler handler)
         {
+            if (this is ICancellableEvent cancellableEvent && cancellableEvent.Cancelled && !handler.IgnoreCancelled)
+            {
+                return;
+            }
+
             Handlers.Add(handler);
             try
             {
@@ -26,7 +31,7 @@ namespace SixModLoader.Events
             }
             catch (Exception e)
             {
-                Logger.Error(new Exception($"Exception occured while {GetType().FullName} in {handler}", e).ToString());
+                Logger.Error(new Exception($"Exception occured while {GetType().FullName} in {handler}", e));
             }
         }
     }

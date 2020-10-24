@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using CommandSystem;
 using RemoteAdmin;
 
@@ -47,7 +48,7 @@ namespace SixModLoader.Api.Extensions
 
                         break;
                     case "*":
-                        players.AddRange(ReferenceHub.Hubs.Values);
+                        players.AddRange(ReferenceHub.Hubs.Values.Where(x => !x.isDedicatedServer));
                         continue;
                 }
 

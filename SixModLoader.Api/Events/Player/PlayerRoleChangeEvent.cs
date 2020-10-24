@@ -9,12 +9,20 @@ namespace SixModLoader.Api.Events.Player.Class
 {
     public class PlayerRoleChangeEvent : PlayerEvent, ICancellableEvent
     {
-        public RoleType RoleType { get; set; }
+        public bool Cancelled { get; set; }
+
+        public RoleType RoleType { get; }
         public List<ItemType> Items { get; set; }
         public bool Lite { get; set; }
         public bool Escape { get; set; }
 
-        public bool Cancelled { get; set; }
+        public PlayerRoleChangeEvent(ReferenceHub player, RoleType roleType, List<ItemType> items, bool lite, bool escape) : base(player)
+        {
+            RoleType = roleType;
+            Items = items;
+            Lite = lite;
+            Escape = escape;
+        }
 
         public override string ToString()
         {
@@ -27,13 +35,13 @@ namespace SixModLoader.Api.Events.Player.Class
             public static PlayerRoleChangeEvent Invoke(ReferenceHub player, RoleType roleType, bool lite, bool escape)
             {
                 var @event = new PlayerRoleChangeEvent
-                {
-                    Player = player,
-                    RoleType = roleType,
-                    Items = player.characterClassManager.Classes.SafeGet(roleType).startItems.ToList(),
-                    Lite = lite,
-                    Escape = escape
-                };
+                (
+                    player,
+                    roleType,
+                    player.characterClassManager.Classes.SafeGet(roleType).startItems.ToList(),
+                    lite,
+                    escape
+                );
 
                 EventManager.Instance.Broadcast(@event);
                 return @event;

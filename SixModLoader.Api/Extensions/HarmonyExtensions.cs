@@ -32,9 +32,7 @@ namespace SixModLoader.Api.Extensions
 
                         if (__instance.GetType() == typeof(ModEnableEvent))
                         {
-                            var harmony = property.GetValue(mod.AbstractInstance) as Harmony;
-
-                            if (harmony == null)
+                            if (!(property.GetValue(mod.AbstractInstance) is Harmony harmony))
                             {
                                 harmony = new Harmony(mod.Info.Id);
                                 property.SetValue(mod.AbstractInstance, harmony);
@@ -46,8 +44,7 @@ namespace SixModLoader.Api.Extensions
 
                         if (__instance.GetType() == typeof(ModDisableEvent))
                         {
-                            var harmony = property.GetValue(mod.AbstractInstance) as Harmony;
-                            if (harmony != null)
+                            if (property.GetValue(mod.AbstractInstance) is Harmony harmony)
                             {
                                 Logger.Info($"[{mod.Info.Name}] Unpatching Harmony");
                                 harmony.Unpatch();

@@ -19,6 +19,8 @@ namespace SixModLoader.Events
 
         public int Priority { get; }
 
+        public bool IgnoreCancelled { get; set; }
+
         public EventHandler(Type eventType, [CanBeNull] object instance, [NotNull] MethodInfo method)
         {
             EventType = eventType;

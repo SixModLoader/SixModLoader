@@ -59,7 +59,7 @@ namespace SixModLoader.Api
     {
         public string[] Files { get; }
 
-        public ZipLibrary(string id, string version, string url, string[] files) : base(id, version, url)
+        public ZipLibrary(string id, string version, string url, params string[] files) : base(id, version, url)
         {
             Files = files;
         }
@@ -70,7 +70,7 @@ namespace SixModLoader.Api
 
             if (!files.All(File.Exists))
             {
-                Logger.Info("Downloading MongoDB");
+                Logger.Info($"Downloading {Id}");
 
                 using var httpClient = new HttpClient();
                 var stream = httpClient.GetStreamAsync(Url).GetAwaiter().GetResult();

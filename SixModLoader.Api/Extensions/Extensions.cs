@@ -36,5 +36,10 @@ namespace SixModLoader.Api.Extensions
         {
             playerMovementSync.OverridePosition(position, rotation, forceGround);
         }
+
+        public static string Format(this ReferenceHub referenceHub)
+        {
+            return $"{referenceHub.nicknameSync.MyNick} ({referenceHub.characterClassManager.UserId})";
+        }
     }
 }

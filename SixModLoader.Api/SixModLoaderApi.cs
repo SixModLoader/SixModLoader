@@ -10,6 +10,7 @@ using SixModLoader.Mods;
 namespace SixModLoader.Api
 {
     [Mod("SixModLoader.SixModLoaderApi")]
+    [Priority(Priority.High)]
     public class SixModLoaderApi
     {
         public Harmony Harmony { get; } = new Harmony("SixModLoader.SixModLoaderApi");
@@ -26,11 +27,18 @@ namespace SixModLoader.Api
             Harmony.PatchAll(typeof(HarmonyExtensions));
         }
 
+        [EventHandler(typeof(ModReloadEvent))]
+        [Priority(Priority.High)]
+        public void OnReload()
+        {
+            LibraryManager.Download();
+        }
+
         [EventHandler(typeof(ModEnableEvent))]
+        [Priority(Priority.High)]
         public void OnEnable()
         {
             Harmony.PatchAll();
-            LibraryManager.Download();
         }
 
         [EventHandler(typeof(ModDisableEvent))]
@@ -40,6 +48,7 @@ namespace SixModLoader.Api
         }
 
         [EventHandler(typeof(ServerConsoleReadyEvent))]
+        [Priority(Priority.High)]
         public void OnServerConsoleReady()
         {
             foreach (var mod in SixModLoader.Instance.ModManager.Mods)

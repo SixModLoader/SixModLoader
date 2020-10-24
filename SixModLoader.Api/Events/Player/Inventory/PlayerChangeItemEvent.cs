@@ -8,8 +8,14 @@ namespace SixModLoader.Api.Events.Player.Inventory
 
     public class PlayerChangeItemEvent : PlayerEvent
     {
-        public Inventory.SyncItemInfo OldItem { get; private set; }
-        public Inventory.SyncItemInfo NewItem { get; private set; }
+        public Inventory.SyncItemInfo OldItem { get; }
+        public Inventory.SyncItemInfo NewItem { get; }
+
+        public PlayerChangeItemEvent(ReferenceHub player, Inventory.SyncItemInfo oldItem, Inventory.SyncItemInfo newItem) : base(player)
+        {
+            OldItem = oldItem;
+            NewItem = newItem;
+        }
 
         public override string ToString()
         {
@@ -22,11 +28,12 @@ namespace SixModLoader.Api.Events.Player.Inventory
             public static void Prefix(Inventory __instance, ref int value)
             {
                 var @event = new PlayerChangeItemEvent
-                {
-                    Player = ReferenceHub.GetHub(__instance.gameObject),
-                    OldItem = __instance.GetItemByUniq(__instance.NetworkitemUniq),
-                    NewItem = __instance.GetItemByUniq(value)
-                };
+                (
+                    ReferenceHub.GetHub(__instance.gameObject),
+                    __instance.GetItemByUniq(__instance.NetworkitemUniq),
+                    __instance.GetItemByUniq(value)
+                );
+
                 EventManager.Instance.Broadcast(@event);
             }
         }

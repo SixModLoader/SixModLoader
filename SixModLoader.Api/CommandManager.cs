@@ -15,7 +15,7 @@ namespace SixModLoader.Api
 
         public void RegisterCommands(ModContainer mod)
         {
-            foreach (var commandType in mod.Assembly.GetTypes().Where(x => typeof(ICommand).IsAssignableFrom(x)))
+            foreach (var commandType in mod.Assembly.GetLoadableTypes().Where(x => typeof(ICommand).IsAssignableFrom(x)))
             {
                 RegisterCommand(commandType);
             }
@@ -47,7 +47,7 @@ namespace SixModLoader.Api
 
         public void UnregisterCommands(ModContainer mod)
         {
-            foreach (var commandType in mod.Assembly.GetTypes().Where(x => typeof(ICommand).IsAssignableFrom(x)))
+            foreach (var commandType in mod.Assembly.GetLoadableTypes().Where(x => typeof(ICommand).IsAssignableFrom(x)))
             {
                 UnregisterCommand(commandType);
             }

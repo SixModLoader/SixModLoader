@@ -3,6 +3,7 @@ using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
 using HarmonyLib;
+using SixModLoader.Api.Extensions;
 using SixModLoader.Events;
 using UnityEngine;
 
@@ -11,12 +12,19 @@ namespace SixModLoader.Api.Events.Player.Weapon
     public class PlayerShootEvent : PlayerEvent, ICancellableEvent
     {
         public bool Cancelled { get; set; }
-        public Vector3 TargetPos { get; set; }
-        public GameObject Target { get; set; }
+
+        public GameObject Target { get; }
+        public Vector3 TargetPos { get; }
+
+        public PlayerShootEvent(ReferenceHub player, GameObject target, Vector3 targetPos) : base(player)
+        {
+            Target = target;
+            TargetPos = targetPos;
+        }
 
         public override string ToString()
         {
-            return $"{base.ToString()}{{{Player.characterClassManager.UserId}}}";
+            return $"{base.ToString()}{{{Player.Format()} -> {Target} ({TargetPos})}}";
         }
 
         [HarmonyPatch(typeof(WeaponManager), nameof(WeaponManager.CallCmdShoot))]
@@ -25,11 +33,11 @@ namespace SixModLoader.Api.Events.Player.Weapon
             public static PlayerShootEvent Invoke(WeaponManager weaponManager, GameObject target, Vector3 targetPos)
             {
                 var @event = new PlayerShootEvent
-                {
-                    Player = weaponManager._hub,
-                    Target = target,
-                    TargetPos = targetPos
-                };
+                (
+                    weaponManager._hub,
+                    target,
+                    targetPos
+                );
 
                 EventManager.Instance.Broadcast(@event);
                 return @event;

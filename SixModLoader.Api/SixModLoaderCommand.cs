@@ -32,7 +32,7 @@ namespace SixModLoader.Api
             public bool Execute(ArraySegment<string> arguments, ICommandSender sender, out string response)
             {
                 var mods = SixModLoader.Instance.ModManager.Mods;
-                response = $"Mods ({mods.Count}): " + string.Join(", ", mods.Select(mod => mod.Info.Name));
+                response = $"Mods ({mods.Count}): " + string.Join(", ", mods.Select(mod => $"{mod.Info.Name} ({mod.Info.Version})"));
                 return true;
             }
 
@@ -96,7 +96,7 @@ namespace SixModLoader.Api
                     mods.Add(mod);
                 }
 
-                new ModReloadEvent { Mods = mods }.Call();
+                new ModReloadEvent(mods).Call();
 
                 response = $"Reloaded {mods.Count} {"mod".Pluralize(mods.Count)}";
                 return true;

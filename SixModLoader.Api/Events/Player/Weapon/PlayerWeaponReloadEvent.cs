@@ -10,8 +10,19 @@ namespace SixModLoader.Api.Events.Player.Weapon
 {
     public class PlayerWeaponReloadEvent : PlayerEvent, ICancellableEvent
     {
-        public bool AnimationOnly { get; private set; }
         public bool Cancelled { get; set; }
+
+        public bool AnimationOnly { get; }
+
+        public PlayerWeaponReloadEvent(ReferenceHub player, bool animationOnly) : base(player)
+        {
+            AnimationOnly = animationOnly;
+        }
+
+        public override string ToString()
+        {
+            return $"{base.ToString()}{{{AnimationOnly}}}";
+        }
 
         [HarmonyPatch(typeof(WeaponManager), nameof(WeaponManager.CallCmdReload))]
         public class Patch
@@ -19,10 +30,10 @@ namespace SixModLoader.Api.Events.Player.Weapon
             public static PlayerWeaponReloadEvent Invoke(WeaponManager weaponManager, bool animationOnly)
             {
                 var @event = new PlayerWeaponReloadEvent
-                {
-                    Player = ReferenceHub.GetHub(weaponManager.gameObject),
-                    AnimationOnly = animationOnly
-                };
+                (
+                    ReferenceHub.GetHub(weaponManager.gameObject),
+                    animationOnly
+                );
 
                 EventManager.Instance.Broadcast(@event);
                 return @event;
