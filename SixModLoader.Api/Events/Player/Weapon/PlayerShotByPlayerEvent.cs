@@ -15,7 +15,7 @@ namespace SixModLoader.Api.Events.Player.Weapon
         public ReferenceHub Shooter { get; }
         public PlayerStats.HitInfo HitInfo { get; set; }
         public float Distance { get; }
-        public string HitboxType { get; }
+        public HitBoxType HitBoxType { get; }
 
         public float Damage
         {
@@ -28,12 +28,12 @@ namespace SixModLoader.Api.Events.Player.Weapon
             }
         }
 
-        public PlayerShotByPlayerEvent(ReferenceHub player, ReferenceHub shooter, PlayerStats.HitInfo hitInfo, float distance, string hitboxType) : base(player)
+        public PlayerShotByPlayerEvent(ReferenceHub player, ReferenceHub shooter, PlayerStats.HitInfo hitInfo, float distance, HitBoxType hitBoxType) : base(player)
         {
             Shooter = shooter;
             HitInfo = hitInfo;
             Distance = distance;
-            HitboxType = hitboxType;
+            HitBoxType = hitBoxType;
         }
 
         public override string ToString()
@@ -44,7 +44,7 @@ namespace SixModLoader.Api.Events.Player.Weapon
         [HarmonyPatch(typeof(WeaponManager), nameof(WeaponManager.CallCmdShoot))]
         public class Patch
         {
-            public static PlayerShotByPlayerEvent Invoke(WeaponManager weaponManager, ReferenceHub target, PlayerStats.HitInfo hitInfo, float distance, string hitboxType)
+            public static PlayerShotByPlayerEvent Invoke(WeaponManager weaponManager, ReferenceHub target, PlayerStats.HitInfo hitInfo, float distance, HitBoxType hitBoxType)
             {
                 var @event = new PlayerShotByPlayerEvent
                 (
@@ -52,7 +52,7 @@ namespace SixModLoader.Api.Events.Player.Weapon
                     weaponManager._hub,
                     hitInfo,
                     distance,
-                    hitboxType
+                    hitBoxType
                 );
 
                 EventManager.Instance.Broadcast(@event);
