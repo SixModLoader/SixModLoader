@@ -31,7 +31,7 @@ namespace SixModLoader.Events
 
         public override string ToString()
         {
-            return Method.GetType().FullName ?? base.ToString();
+            return Method.FullDescription();
         }
     }
 

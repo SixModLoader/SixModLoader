@@ -93,7 +93,7 @@ namespace SixModLoader.Api.Events.Player.Weapon
                     new CodeInstruction(OpCodes.Ldarg_0), // load this
                     new CodeInstruction(OpCodes.Ldloc_S, 3), // load target
                     new CodeInstruction(OpCodes.Ldloc_S, hitInfoLocal), // load hitinfo
-                    new CodeInstruction(OpCodes.Ldloc_S, 11), // load distance local
+                    new CodeInstruction(OpCodes.Ldloc_S, 12), // load distance local
                     new CodeInstruction(OpCodes.Ldarg_2), // load hitboxType
                     new CodeInstruction(OpCodes.Call, m_Invoke), // call event
                     new CodeInstruction(OpCodes.Stloc_S, eventLocal), // store event
