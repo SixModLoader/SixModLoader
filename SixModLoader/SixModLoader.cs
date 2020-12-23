@@ -23,9 +23,14 @@ namespace SixModLoader
 
         public SemanticVersion Version { get; internal set; }
 
-        public VersionRange TargetGameVersion { get; } = VersionRange.Parse("[10.1.1]");
+        public VersionRange TargetGameVersion { get; } = VersionRange.Parse("[10.1.3]");
 
-        public bool IsGameCompatible => TargetGameVersion.Satisfies(GameVersionParser.Parse().ToNuGetVersion());
+        public static SemanticVersion GameVersion { get; } = new SemanticVersion(
+            GameCore.Version.Major, GameCore.Version.Minor, GameCore.Version.Revision,
+            GameCore.Version.ExtendedVersionCheckNeeded ? GameCore.Version.DescriptionOverride : null
+        );
+
+        public bool IsGameCompatible => TargetGameVersion.Satisfies(GameVersion.ToNuGetVersion());
 
         public string DataPath { get; }
         public string BinPath { get; }
@@ -87,7 +92,7 @@ namespace SixModLoader
 #if DEBUG
                                                   " - DEBUG BUILD (DON'T USE THIS IN PRODUCTION)" +
 #endif
-                                                  $"\nGame version: {GameVersionParser.Parse()}\n" +
+                                                  $"\nGame version: {GameVersion}\n" +
                                                   $"Compatible game versions: {TargetGameVersion.ToShortString()} ({(IsGameCompatible ? "COMPATIBLE" : "INCOMPATIBLE")})";
 
                 if (!IsGameCompatible)
